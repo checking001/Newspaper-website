@@ -2,6 +2,12 @@
 
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\AuthorController;
+use App\Http\Controllers\TagController;
+use App\Http\Controllers\MediaController;
+
 
 // Health check
 Route::get('/health', function () {
@@ -44,6 +50,22 @@ Route::middleware('auth:sanctum')->group(function () {
             'message' => 'Admin dashboard - coming soon',
         ]);
     });
+    // Articles
+    Route::apiResource('articles', ArticleController::class);
+    Route::post('articles/{article}/publish', [ArticleController::class, 'publish']);
+    Route::post('articles/{article}/restore', [ArticleController::class, 'restore']);
+
+    // Categories
+    Route::apiResource('categories', CategoryController::class);
+
+    // Authors
+    Route::apiResource('authors', AuthorController::class);
+
+    // Tags
+    Route::apiResource('tags', TagController::class);
+
+    // Media
+    Route::apiResource('media', MediaController::class);
 });
 
 Route::fallback(function () {
