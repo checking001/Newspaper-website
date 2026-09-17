@@ -12,7 +12,22 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->statefulApi();
+        // Add Sanctum middleware for API
+        $middleware->api(prepend: [
+            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+        ]);
+
+        // Add custom security middleware
+        $middleware->api(append: [
+            \App\Http\Middleware\SecurityHeadersMiddleware::class,
+            \App\Http\Middleware\RateLimitMiddleware::class,
+            \App\Http\Middleware\InputValidationMiddleware::class,
+        ]);
+
+        // Verify CSRF tokens (except API)
+        $middleware->validateCsrfTokens(except: [
+            'api/*',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
