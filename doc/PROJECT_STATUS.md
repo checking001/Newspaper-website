@@ -176,22 +176,76 @@
 - ✅ File upload ready (MediaController)
 - ✅ Ready for Phase 5 (Public Website)
 
-**Next Phase:** 5 — Public Website (homepage, article pages, categories, search, etc.)
+## CURRENT PROGRESS
 
-### ⏳ PHASE 5 — PUBLIC WEBSITE
+**Phase:** 5 (Public Website)  
+**Last Completed Step:** 5.15 (All public pages, layouts, header/footer)
 
-- [ ] Step 5.1 — Frontend: Homepage (dynamic sections from API)
-- [ ] Step 5.2 — Frontend: Latest news page + pagination
-- [ ] Step 5.3 — Frontend: Category pages (parent + children)
-- [ ] Step 5.4 — Frontend: Article page (full content, related, most read)
-- [ ] Step 5.5 — Frontend: Sports page (filtered by category)
-- [ ] Step 5.6 — Frontend: Video page (YouTube, external URLs, uploads)
-- [ ] Step 5.7 — Frontend: Author pages (all articles by author)
-- [ ] Step 5.8 — Frontend: Tag pages (articles with tag)
-- [ ] Step 5.9 — Frontend: Search + archive pages
-- [ ] Step 5.10 — Frontend: Info pages (about, contact, privacy, terms, etc.)
+### PHASE 5 ✅ COMPLETE
 
----
+**Backend (3 Public Controllers):**
+
+- ✅ PublicArticleController: index, show, search, mostRead, breaking, archive
+- ✅ PublicCategoryController: index, show with articles
+- ✅ PublicPageController: homepage, author, tag, info pages
+
+**Public API Endpoints:**
+
+- ✅ GET /api/articles — List articles (filterable, paginated)
+- ✅ GET /api/articles/{slug} — Article detail with related
+- ✅ GET /api/articles/search — Search articles
+- ✅ GET /api/articles/breaking — Breaking news
+- ✅ GET /api/articles/most-read — Most read articles
+- ✅ GET /api/articles/archive — Archive by year/month
+- ✅ GET /api/categories — Category tree
+- ✅ GET /api/categories/{slug} — Category with articles
+- ✅ GET /api/homepage — Dynamic homepage sections
+- ✅ GET /api/authors/{slug} — Author page with articles
+- ✅ GET /api/tags/{slug} — Tag page with articles
+- ✅ GET /api/pages/{slug} — Info pages (about, contact, privacy, terms)
+
+**Frontend (15 Public Pages):**
+
+- ✅ app/page.tsx — Homepage with dynamic sections + breaking news
+- ✅ app/articles/page.tsx — Latest news (paginated)
+- ✅ app/articles/[slug]/page.tsx — Article detail with related, tags, author
+- ✅ app/categories/[slug]/page.tsx — Category page with subcategories
+- ✅ app/search/page.tsx — Search results
+- ✅ app/archive/page.tsx — Archive with year/month filtering
+- ✅ app/authors/[slug]/page.tsx — Author profile + their articles
+- ✅ app/tags/[slug]/page.tsx — Tag page with articles
+- ✅ app/[slug]/page.tsx — Info pages (about, contact, privacy, terms)
+- ✅ app/layout.tsx — Updated root layout
+- ✅ components/Header.tsx — Navigation header with search + category menu
+- ✅ components/Footer.tsx — Footer with links + newsletter
+- ✅ components/ArticleCard.tsx — Reusable article card (3 layouts: grid, list, featured)
+- ✅ components/Pagination.tsx — Pagination component
+- ✅ lib/public-api.ts — Public API service
+
+**Features:**
+
+- ✅ Dynamic homepage sections (category-based, layout-aware)
+- ✅ Breaking news banner on homepage
+- ✅ Full-text search across articles
+- ✅ Archive with year/month filtering
+- ✅ Pagination on all list pages
+- ✅ Related articles on article detail page
+- ✅ Author profile pages
+- ✅ Tag pages
+- ✅ Category hierarchy display
+- ✅ Responsive layout (mobile + desktop)
+- ✅ Sticky navigation header
+- ✅ Newsletter signup form (UI only)
+
+**Status:**
+
+- ✅ Complete public website functional
+- ✅ All pages responsive
+- ✅ API integration working
+- ✅ Navigation menu dynamic
+- ✅ Ready for Phase 6 (SEO)
+
+**Next Phase:** 6 — SEO + Structured Data (metadata, schema, sitemap, RSS)
 
 ### ⏳ PHASE 6 — SEO
 
