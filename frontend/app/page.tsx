@@ -1,87 +1,116 @@
-import { SITE_NAME } from '@/lib/constants'
+'use client'
 
-export const metadata = {
-  title: `হোম | ${SITE_NAME}`,
-  description: 'সর্বশেষ খবর এবং আপডেট'
-}
+import { useEffect, useState } from 'react'
+import Link from 'next/link'
+import ArticleCard from '@/components/ArticleCard'
+import { PublicApiService, HomepageSection, Article } from '@/lib/public-api'
 
 export default function HomePage () {
+  const [sections, setSections] = useState<HomepageSection[]>([])
+  const [breaking, setBreaking] = useState<Article[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [sectionsData, breakingData] = await Promise.all([
+          PublicApiService.getHomepage(),
+          PublicApiService.getBreakingNews(3)
+        ])
+
+        setSections(sectionsData)
+        setBreaking(breakingData)
+      } catch (error) {
+        console.error('Failed to load homepage:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadData()
+  }, [])
+
   return (
-    <div className='space-y-12'>
-      {/* Hero Section */}
-      <section className='bg-gradient-to-r from-brand-primary to-brand-secondary rounded-lg p-8 text-white'>
-        <h1 className='text-4xl font-bold mb-4'>স্বাগতম</h1>
-        <p className='text-lg text-gray-100'>
-          {SITE_NAME} এ সর্বশেষ খবর, বিশ্লেষণ এবং গভীর রিপোর্টিং পান।
-        </p>
-      </section>
+    <main className='space-y-12'>
+      {/* Breaking News Banner */}
+      {breaking.length > 0 && (
+        <section className='bg-red-50 border-l-4 border-red-600 p-6 rounded-lg'>
+          <h2 className='text-2xl font-bold text-red-600 mb-4'>
+            🔴 ব্রেকিং নিউজ
+          </h2>
+          <div className='space-y-3'>
+            {breaking.map(article => (
+              <Link
+                key={article.id}
+                href={`/articles/${article.slug}`}
+                className='block p-3 bg-white rounded hover:bg-gray-50 transition'
+              >
+                <h3 className='font-bold text-brand-text hover:text-brand-accent'>
+                  {article.title}
+                </h3>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
-      {/* Breaking News (Placeholder) */}
-      <section>
-        <h2 className='text-2xl font-bold mb-6 border-b-4 border-brand-accent pb-2'>
-          🔴 সর্বশেষ খবর
-        </h2>
-        <div className='bg-gray-100 rounded-lg p-8 text-center text-gray-500'>
-          <p>Phase 2 - Database সেটআপের পর খবর যুক্ত হবে</p>
-        </div>
-      </section>
-
-      {/* Featured Articles (Placeholder) */}
-      <section>
-        <h2 className='text-2xl font-bold mb-6 border-b-4 border-brand-accent pb-2'>
-          বিশেষ নিবন্ধ
-        </h2>
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-          {[1, 2, 3].map(i => (
-            <div
-              key={i}
-              className='bg-gray-100 rounded-lg p-6 text-center text-gray-500'
-            >
-              <p>নিবন্ধ {i}</p>
+      {/* Homepage Sections */}
+      {loading ? (
+        <div className='text-center py-12'>লোড হচ্ছে...</div>
+      ) : (
+        sections.map(section => (
+          <section key={section.id} className='space-y-6'>
+            <div className='flex justify-between items-center'>
+              <h2 className='text-3xl font-bold border-b-4 border-brand-accent pb-2'>
+                {section.title}
+              </h2>
+              {section.category && (
+                <Link
+                  href={`/categories/${section.category.slug}`}
+                  className='text-brand-accent hover:underline'
+                >
+                  সবকিছু দেখুন →
+                </Link>
+              )}
             </div>
-          ))}
-        </div>
-      </section>
 
-      {/* Categories (Placeholder) */}
-      <section>
-        <h2 className='text-2xl font-bold mb-6 border-b-4 border-brand-accent pb-2'>
-          ক্যাটাগরি
-        </h2>
-        <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
-          {[
-            'বাংলাদেশ',
-            'রাজনীতি',
-            'অর্থনীতি',
-            'আন্তর্জাতিক',
-            'ক্রীড়া',
-            'বিনোদন',
-            'প্রযুক্তি',
-            'স্বাস্থ্য'
-          ].map(cat => (
-            <div
-              key={cat}
-              className='bg-brand-accent text-white rounded-lg p-4 text-center font-semibold hover:bg-brand-secondary transition'
-            >
-              {cat}
-            </div>
-          ))}
-        </div>
-      </section>
+            {section.layout_type === 'featured' && section.articles.length > 0 && (
+              <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
+                <ArticleCard article={section.articles[0]} layout='featured' />
+                <div className='space-y-4'>
+                  {section.articles.slice(1, 4).map(article => (
+                    <ArticleCard
+                      key={article.id}
+                      article={article}
+                      layout='list'
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
 
-      {/* Most Read (Placeholder) */}
-      <section>
-        <h2 className='text-2xl font-bold mb-6 border-b-4 border-brand-accent pb-2'>
-          বেশি পড়া হয়েছে
-        </h2>
-        <div className='space-y-4'>
-          {[1, 2, 3].map(i => (
-            <div key={i} className='bg-gray-100 rounded-lg p-4 text-gray-500'>
-              <p>জনপ্রিয় নিবন্ধ {i}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-    </div>
+            {section.layout_type === 'grid' && (
+              <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+                {section.articles.map(article => (
+                  <ArticleCard key={article.id} article={article} />
+                ))}
+              </div>
+            )}
+
+            {section.layout_type === 'list' && (
+              <div className='space-y-4'>
+                {section.articles.map(article => (
+                  <ArticleCard
+                    key={article.id}
+                    article={article}
+                    layout='list'
+                  />
+                ))}
+              </div>
+            )}
+          </section>
+        ))
+      )}
+    </main>
   )
 }

@@ -7,6 +7,9 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\MediaController;
+use App\Http\Controllers\PublicArticleController;
+use App\Http\Controllers\PublicCategoryController;
+use App\Http\Controllers\PublicPageController;
 
 
 // Health check
@@ -32,6 +35,21 @@ Route::get('/categories', function () {
         'categories' => [],
     ]);
 });
+// Public routes (no auth required)
+Route::get('/articles', [PublicArticleController::class, 'index']);
+Route::get('/articles/search', [PublicArticleController::class, 'search']);
+Route::get('/articles/breaking', [PublicArticleController::class, 'breaking']);
+Route::get('/articles/most-read', [PublicArticleController::class, 'mostRead']);
+Route::get('/articles/archive', [PublicArticleController::class, 'archive']);
+Route::get('/articles/{slug}', [PublicArticleController::class, 'show']);
+
+Route::get('/categories', [PublicCategoryController::class, 'index']);
+Route::get('/categories/{slug}', [PublicCategoryController::class, 'show']);
+
+Route::get('/homepage', [PublicPageController::class, 'homepage']);
+Route::get('/authors/{slug}', [PublicPageController::class, 'author']);
+Route::get('/tags/{slug}', [PublicPageController::class, 'tag']);
+Route::get('/pages/{slug}', [PublicPageController::class, 'page']);
 
 // Auth routes (public)
 Route::post('/auth/login', [AuthController::class, 'login']);
