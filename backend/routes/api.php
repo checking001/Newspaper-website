@@ -10,6 +10,7 @@ use App\Http\Controllers\MediaController;
 use App\Http\Controllers\PublicArticleController;
 use App\Http\Controllers\PublicCategoryController;
 use App\Http\Controllers\PublicPageController;
+use App\Http\Controllers\SeoController;
 
 
 // Health check
@@ -50,6 +51,11 @@ Route::get('/homepage', [PublicPageController::class, 'homepage']);
 Route::get('/authors/{slug}', [PublicPageController::class, 'author']);
 Route::get('/tags/{slug}', [PublicPageController::class, 'tag']);
 Route::get('/pages/{slug}', [PublicPageController::class, 'page']);
+// SEO routes
+Route::get('/sitemap.xml', [SeoController::class, 'sitemap']);
+Route::get('/feed.rss', [SeoController::class, 'rss']);
+Route::get('/schema/article/{slug}', [SeoController::class, 'articleSchema']);
+Route::get('/schema/organization', [SeoController::class, 'organizationSchema']);
 
 // Auth routes (public)
 Route::post('/auth/login', [AuthController::class, 'login']);
