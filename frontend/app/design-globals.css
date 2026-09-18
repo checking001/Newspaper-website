@@ -1,0 +1,663 @@
+/* ============================================
+   DESIGN SYSTEM - GLOBAL STYLES
+   খবরের কাগজ Newspaper Design System
+   ============================================ */
+
+/* ============================================
+   1. CSS VARIABLES - COLORS
+   ============================================ */
+
+:root {
+  /* Primary Colors */
+  --color-primary: #1a1a1a;           /* Dark gray - headlines, text */
+  --color-primary-dark: #000000;      /* Pure black - borders, accents */
+  --color-secondary: #d32f2f;         /* Red - breaking news, category badges */
+  --color-secondary-light: #ef5350;   /* Light red - hover states */
+
+  /* Accent Colors */
+  --color-accent: #1976d2;            /* Blue - links, CTAs */
+  --color-accent-dark: #1565c0;       /* Darker blue - hover */
+  --color-accent-light: #42a5f5;      /* Light blue - light backgrounds */
+
+  /* Text Colors */
+  --color-text-primary: #000000;      /* Main text */
+  --color-text-secondary: #666666;    /* Secondary text, metadata */
+  --color-text-tertiary: #999999;     /* Tertiary text, timestamps */
+  --color-text-muted: #cccccc;        /* Muted text */
+  --color-text-inverse: #ffffff;      /* Text on dark backgrounds */
+
+  /* Background Colors */
+  --color-bg-primary: #ffffff;        /* Main background */
+  --color-bg-secondary: #f5f5f5;      /* Secondary background, grids */
+  --color-bg-tertiary: #efefef;       /* Tertiary background */
+  --color-bg-dark: #1a1a1a;           /* Dark background */
+
+  /* Border & Divider Colors */
+  --color-border: #e0e0e0;            /* Main border */
+  --color-border-light: #f0f0f0;      /* Light border */
+  --color-border-dark: #cccccc;       /* Dark border */
+  --color-divider: #efefef;           /* Content divider */
+
+  /* State Colors */
+  --color-success: #4caf50;           /* Success - green */
+  --color-warning: #ff9800;           /* Warning - orange */
+  --color-error: #f44336;             /* Error - red */
+  --color-info: #2196f3;              /* Info - light blue */
+
+  /* Semantic Colors */
+  --color-breaking: #d32f2f;          /* Breaking news - red */
+  --color-featured: #1976d2;          /* Featured article - blue */
+  --color-trending: #ff6f00;          /* Trending - orange */
+  --color-live: #d32f2f;              /* Live indicator - red */
+
+  /* Category Colors (for badges) */
+  --color-category-default: #757575;  /* Default gray */
+  --color-category-politics: #d32f2f; /* Politics - red */
+  --color-category-economy: #1976d2;  /* Economy - blue */
+  --color-category-sports: #ff6f00;   /* Sports - orange */
+  --color-category-entertainment: #9c27b0; /* Entertainment - purple */
+  --color-category-tech: #00bcd4;     /* Technology - cyan */
+  --color-category-international: #4caf50; /* International - green */
+  --color-category-lifestyle: #e91e63; /* Lifestyle - pink */
+
+  /* Overlay & Shadow Colors */
+  --color-overlay: rgba(0, 0, 0, 0.5);
+  --color-shadow-light: rgba(0, 0, 0, 0.05);
+  --color-shadow-medium: rgba(0, 0, 0, 0.1);
+  --color-shadow-dark: rgba(0, 0, 0, 0.2);
+}
+
+/* Dark Mode Support (if needed later) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg-primary: #1a1a1a;
+    --color-bg-secondary: #2a2a2a;
+    --color-bg-tertiary: #3a3a3a;
+    --color-text-primary: #ffffff;
+    --color-text-secondary: #b0b0b0;
+    --color-border: #333333;
+  }
+}
+
+/* ============================================
+   2. CSS VARIABLES - TYPOGRAPHY
+   ============================================ */
+
+:root {
+  /* Font Families */
+  --font-heading: 'Noto Serif Bengali', 'Noto Serif', Georgia, serif;
+  --font-body: 'Noto Sans Bengali', 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Courier New', 'Monaco', monospace;
+  --font-display: 'Noto Serif Bengali', 'Noto Serif', serif; /* For large headlines */
+
+  /* Font Sizes - Mobile First */
+  --font-size-xs: 0.75rem;      /* 12px */
+  --font-size-sm: 0.875rem;     /* 14px */
+  --font-size-base: 1rem;       /* 16px */
+  --font-size-lg: 1.125rem;     /* 18px */
+  --font-size-xl: 1.25rem;      /* 20px */
+  --font-size-2xl: 1.5rem;      /* 24px */
+  --font-size-3xl: 1.875rem;    /* 30px */
+  --font-size-4xl: 2.25rem;     /* 36px */
+  --font-size-5xl: 3rem;        /* 48px */
+  --font-size-6xl: 3.75rem;     /* 60px */
+
+  /* Font Weights */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  /* Line Heights */
+  --line-height-tight: 1.25;     /* For headlines */
+  --line-height-snug: 1.375;
+  --line-height-normal: 1.5;     /* For body text */
+  --line-height-relaxed: 1.625;
+  --line-height-loose: 1.75;     /* For article body */
+  --line-height-extra-loose: 1.875;
+
+  /* Letter Spacing */
+  --letter-spacing-tight: -0.02em;
+  --letter-spacing-normal: 0em;
+  --letter-spacing-wide: 0.02em;
+  --letter-spacing-wider: 0.05em;
+
+  /* Responsive Font Sizes */
+  /* Headline 1 */
+  --h1-size-mobile: 2rem;        /* 32px mobile */
+  --h1-size-tablet: 2.5rem;      /* 40px tablet */
+  --h1-size-desktop: 3rem;       /* 48px desktop */
+  --h1-line-height: 1.2;
+  --h1-weight: 700;
+
+  /* Headline 2 */
+  --h2-size-mobile: 1.75rem;     /* 28px mobile */
+  --h2-size-tablet: 2rem;        /* 32px tablet */
+  --h2-size-desktop: 2.25rem;    /* 36px desktop */
+  --h2-line-height: 1.3;
+  --h2-weight: 700;
+
+  /* Headline 3 */
+  --h3-size-mobile: 1.5rem;      /* 24px mobile */
+  --h3-size-tablet: 1.75rem;     /* 28px tablet */
+  --h3-size-desktop: 1.875rem;   /* 30px desktop */
+  --h3-line-height: 1.3;
+  --h3-weight: 600;
+
+  /* Body Text */
+  --body-size: 1rem;             /* 16px */
+  --body-line-height: 1.6;
+  --body-weight: 400;
+
+  /* Article Body (Reading) */
+  --article-size: 1.125rem;      /* 18px - optimized for reading */
+  --article-line-height: 1.8;
+  --article-weight: 400;
+
+  /* Small Text */
+  --small-size: 0.875rem;        /* 14px */
+  --small-line-height: 1.5;
+  --small-weight: 400;
+
+  /* Metadata (timestamps, authors) */
+  --meta-size: 0.8125rem;        /* 13px */
+  --meta-line-height: 1.4;
+  --meta-weight: 400;
+}
+
+/* ============================================
+   3. CSS VARIABLES - SPACING
+   ============================================ */
+
+:root {
+  /* Base Unit: 0.25rem = 4px */
+  --spacing-0: 0;
+  --spacing-1: 0.25rem;      /* 4px */
+  --spacing-2: 0.5rem;       /* 8px */
+  --spacing-3: 0.75rem;      /* 12px */
+  --spacing-4: 1rem;         /* 16px */
+  --spacing-5: 1.25rem;      /* 20px */
+  --spacing-6: 1.5rem;       /* 24px */
+  --spacing-8: 2rem;         /* 32px */
+  --spacing-10: 2.5rem;      /* 40px */
+  --spacing-12: 3rem;        /* 48px */
+  --spacing-14: 3.5rem;      /* 56px */
+  --spacing-16: 4rem;        /* 64px */
+  --spacing-20: 5rem;        /* 80px */
+  --spacing-24: 6rem;        /* 96px */
+  --spacing-28: 7rem;        /* 112px */
+  --spacing-32: 8rem;        /* 128px */
+
+  /* Common Patterns */
+  --padding-xs: 0.5rem;           /* 8px */
+  --padding-sm: 0.75rem;          /* 12px */
+  --padding-md: 1rem;             /* 16px */
+  --padding-lg: 1.5rem;           /* 24px */
+  --padding-xl: 2rem;             /* 32px */
+  --padding-2xl: 3rem;            /* 48px */
+
+  --margin-xs: 0.5rem;            /* 8px */
+  --margin-sm: 0.75rem;           /* 12px */
+  --margin-md: 1rem;              /* 16px */
+  --margin-lg: 1.5rem;            /* 24px */
+  --margin-xl: 2rem;              /* 32px */
+  --margin-2xl: 3rem;             /* 48px */
+
+  /* Content Width */
+  --content-width-sm: 320px;      /* Mobile */
+  --content-width-md: 680px;      /* Article body */
+  --content-width-lg: 1024px;     /* Tablet */
+  --content-width-xl: 1280px;     /* Desktop */
+  --content-width-2xl: 1440px;    /* Large desktop */
+  --content-width-max: 100%;      /* Full width with padding */
+
+  /* Gap (for flex/grid) */
+  --gap-xs: 0.5rem;              /* 8px */
+  --gap-sm: 0.75rem;             /* 12px */
+  --gap-md: 1rem;                /* 16px */
+  --gap-lg: 1.5rem;              /* 24px */
+  --gap-xl: 2rem;                /* 32px */
+  --gap-2xl: 3rem;               /* 48px */
+}
+
+/* ============================================
+   4. CSS VARIABLES - BREAKPOINTS
+   ============================================ */
+
+:root {
+  /* Breakpoints for responsive design */
+  --breakpoint-xs: 320px;    /* Extra small - mobile phone */
+  --breakpoint-sm: 640px;    /* Small - mobile landscape */
+  --breakpoint-md: 768px;    /* Medium - tablet */
+  --breakpoint-lg: 1024px;   /* Large - tablet landscape / small desktop */
+  --breakpoint-xl: 1280px;   /* Extra large - desktop */
+  --breakpoint-2xl: 1440px;  /* 2X large - large desktop */
+  --breakpoint-3xl: 1600px;  /* 3X large - very large desktop */
+}
+
+/* ============================================
+   5. CSS VARIABLES - SHADOWS & EFFECTS
+   ============================================ */
+
+:root {
+  /* Box Shadows */
+  --shadow-none: none;
+  --shadow-xs: 0 1px 2px 0 var(--color-shadow-light);
+  --shadow-sm: 0 1px 3px 0 var(--color-shadow-light), 0 1px 2px 0 var(--color-shadow-light);
+  --shadow-md: 0 4px 6px -1px var(--color-shadow-light), 0 2px 4px -1px var(--color-shadow-light);
+  --shadow-lg: 0 10px 15px -3px var(--color-shadow-medium), 0 4px 6px -2px var(--color-shadow-light);
+  --shadow-xl: 0 20px 25px -5px var(--color-shadow-medium), 0 10px 10px -5px var(--color-shadow-light);
+  --shadow-2xl: 0 25px 50px -12px var(--color-shadow-dark);
+
+  /* Article/Content Shadow */
+  --shadow-article: 0 2px 8px 0 var(--color-shadow-light);
+
+  /* Card Shadow */
+  --shadow-card: 0 1px 3px 0 var(--color-shadow-light);
+
+  /* Image Shadow */
+  --shadow-image: 0 4px 12px 0 var(--color-shadow-medium);
+
+  /* Hover Shadow (for interactive elements) */
+  --shadow-hover: 0 10px 20px 0 var(--color-shadow-medium);
+
+  /* Drop Shadows */
+  --drop-shadow-sm: drop-shadow(0 1px 2px var(--color-shadow-light));
+  --drop-shadow-md: drop-shadow(0 4px 6px var(--color-shadow-light));
+  --drop-shadow-lg: drop-shadow(0 10px 15px var(--color-shadow-medium));
+}
+
+/* ============================================
+   6. CSS VARIABLES - BORDERS & RADIUS
+   ============================================ */
+
+:root {
+  /* Border Widths */
+  --border-width-0: 0px;
+  --border-width-1: 1px;
+  --border-width-2: 2px;
+  --border-width-3: 3px;
+  --border-width-4: 4px;
+
+  /* Border Radius */
+  --radius-none: 0;
+  --radius-xs: 0.125rem;    /* 2px */
+  --radius-sm: 0.25rem;     /* 4px */
+  --radius-md: 0.375rem;    /* 6px */
+  --radius-lg: 0.5rem;      /* 8px */
+  --radius-xl: 0.75rem;     /* 12px */
+  --radius-2xl: 1rem;       /* 16px */
+  --radius-full: 9999px;    /* Full circle */
+
+  /* Default Border Styles */
+  --border-default: 1px solid var(--color-border);
+  --border-light: 1px solid var(--color-border-light);
+  --border-dark: 1px solid var(--color-border-dark);
+  --border-strong: 2px solid var(--color-primary);
+}
+
+/* ============================================
+   7. CSS VARIABLES - TRANSITIONS & ANIMATIONS
+   ============================================ */
+
+:root {
+  /* Durations */
+  --duration-75: 75ms;
+  --duration-100: 100ms;
+  --duration-150: 150ms;
+  --duration-200: 200ms;
+  --duration-300: 300ms;
+  --duration-500: 500ms;
+  --duration-700: 700ms;
+  --duration-1000: 1000ms;
+
+  /* Timing Functions */
+  --ease-linear: linear;
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Common Transitions */
+  --transition-fast: all var(--duration-150) var(--ease-in-out);
+  --transition-base: all var(--duration-300) var(--ease-in-out);
+  --transition-slow: all var(--duration-500) var(--ease-in-out);
+}
+
+/* ============================================
+   8. CSS VARIABLES - Z-INDEX SCALE
+   ============================================ */
+
+:root {
+  --z-hide: -1;
+  --z-base: 0;
+  --z-dropdown: 10;
+  --z-sticky: 20;
+  --z-fixed: 30;
+  --z-modal-backdrop: 40;
+  --z-modal: 50;
+  --z-popover: 60;
+  --z-tooltip: 70;
+  --z-notification: 80;
+}
+
+/* ============================================
+   9. GLOBAL STYLES
+   ============================================ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--body-size);
+  line-height: var(--body-line-height);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-primary);
+  overflow-x: hidden;
+}
+
+/* ============================================
+   10. TYPOGRAPHY DEFAULTS
+   ============================================ */
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  color: var(--color-text-primary);
+  margin-bottom: var(--margin-md);
+}
+
+h1 {
+  font-size: var(--h1-size-mobile);
+  font-weight: var(--h1-weight);
+  line-height: var(--h1-line-height);
+}
+
+h2 {
+  font-size: var(--h2-size-mobile);
+  font-weight: var(--h2-weight);
+  line-height: var(--h2-line-height);
+}
+
+h3 {
+  font-size: var(--h3-size-mobile);
+  font-weight: var(--h3-weight);
+  line-height: var(--h3-line-height);
+}
+
+h4, h5, h6 {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+}
+
+/* Paragraphs */
+p {
+  margin-bottom: var(--margin-md);
+  line-height: var(--line-height-normal);
+}
+
+/* Links */
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-accent-dark);
+  text-decoration: underline;
+}
+
+/* Lists */
+ul, ol {
+  margin-left: var(--spacing-6);
+  margin-bottom: var(--margin-md);
+}
+
+li {
+  margin-bottom: var(--margin-xs);
+  line-height: var(--line-height-normal);
+}
+
+/* Code */
+code {
+  font-family: var(--font-mono);
+  background-color: var(--color-bg-secondary);
+  padding: var(--padding-xs) var(--padding-sm);
+  border-radius: var(--radius-sm);
+  font-size: 0.9em;
+}
+
+/* Blockquote */
+blockquote {
+  border-left: 4px solid var(--color-accent);
+  padding-left: var(--padding-lg);
+  margin: var(--margin-lg) 0;
+  font-style: italic;
+  color: var(--color-text-secondary);
+}
+
+/* ============================================
+   11. RESPONSIVE TYPOGRAPHY
+   ============================================ */
+
+@media (min-width: 768px) {
+  h1 {
+    font-size: var(--h1-size-tablet);
+  }
+
+  h2 {
+    font-size: var(--h2-size-tablet);
+  }
+
+  h3 {
+    font-size: var(--h3-size-tablet);
+  }
+}
+
+@media (min-width: 1024px) {
+  h1 {
+    font-size: var(--h1-size-desktop);
+  }
+
+  h2 {
+    font-size: var(--h2-size-desktop);
+  }
+
+  h3 {
+    font-size: var(--h3-size-desktop);
+  }
+}
+
+/* ============================================
+   12. IMAGES
+   ============================================ */
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ============================================
+   13. UTILITY CLASSES
+   ============================================ */
+
+/* Text Utilities */
+.text-primary {
+  color: var(--color-text-primary);
+}
+
+.text-secondary {
+  color: var(--color-text-secondary);
+}
+
+.text-tertiary {
+  color: var(--color-text-tertiary);
+}
+
+.text-accent {
+  color: var(--color-accent);
+}
+
+.text-breaking {
+  color: var(--color-breaking);
+}
+
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+/* Background Utilities */
+.bg-primary {
+  background-color: var(--color-bg-primary);
+}
+
+.bg-secondary {
+  background-color: var(--color-bg-secondary);
+}
+
+.bg-dark {
+  background-color: var(--color-bg-dark);
+  color: var(--color-text-inverse);
+}
+
+/* Padding Utilities */
+.p-xs { padding: var(--padding-xs); }
+.p-sm { padding: var(--padding-sm); }
+.p-md { padding: var(--padding-md); }
+.p-lg { padding: var(--padding-lg); }
+.p-xl { padding: var(--padding-xl); }
+.p-2xl { padding: var(--padding-2xl); }
+
+/* Margin Utilities */
+.m-xs { margin: var(--margin-xs); }
+.m-sm { margin: var(--margin-sm); }
+.m-md { margin: var(--margin-md); }
+.m-lg { margin: var(--margin-lg); }
+.m-xl { margin: var(--margin-xl); }
+.m-2xl { margin: var(--margin-2xl); }
+
+/* Typography Utilities */
+.font-heading {
+  font-family: var(--font-heading);
+}
+
+.font-body {
+  font-family: var(--font-body);
+}
+
+.font-bold {
+  font-weight: var(--font-weight-bold);
+}
+
+.font-semibold {
+  font-weight: var(--font-weight-semibold);
+}
+
+.font-medium {
+  font-weight: var(--font-weight-medium);
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-left {
+  text-align: left;
+}
+
+/* Container Utility */
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--padding-md);
+  padding-right: var(--padding-md);
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 750px;
+    padding-left: var(--padding-lg);
+    padding-right: var(--padding-lg);
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    max-width: 960px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .container {
+    max-width: 1140px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .container {
+    max-width: 1320px;
+  }
+}
+
+/* Display Utilities */
+.hidden {
+  display: none !important;
+}
+
+.block {
+  display: block;
+}
+
+.inline {
+  display: inline;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.flex {
+  display: flex;
+}
+
+.grid {
+  display: grid;
+}
+
+/* Transition Utilities */
+.transition-fast {
+  transition: var(--transition-fast);
+}
+
+.transition-base {
+  transition: var(--transition-base);
+}
+
+.transition-slow {
+  transition: var(--transition-slow);
+}
+
+/* ============================================
+   END OF DESIGN SYSTEM
+   ============================================ */
