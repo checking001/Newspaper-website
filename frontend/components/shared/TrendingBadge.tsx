@@ -7,7 +7,7 @@ interface TrendingItem {
   id: number
   title: string
   slug: string
-  views: number
+  views?: number
   rank: number
 }
 
@@ -51,9 +51,11 @@ export const TrendingBadge: React.FC<TrendingBadgeProps> = ({
               <p className='text-[var(--font-size-sm)] font-semibold group-hover:underline line-clamp-2'>
                 {item.title}
               </p>
-              <p className='text-[var(--meta-size)] opacity-75'>
-                👁️ {item.views.toLocaleString('bn-BD')}
-              </p>
+              {item.views !== undefined && item.views > 0 && (
+                <p className='text-[var(--meta-size)] opacity-75'>
+                  👁️ {item.views.toLocaleString('bn-BD')}
+                </p>
+              )}
             </div>
           </Link>
         ))}

@@ -4,7 +4,6 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import SchemaScript from '@/components/SchemaScript'
 import { generateOrganizationSchema } from '@/lib/seo-utils'
-import './globals.css'
 
 export const metadata: Metadata = {
   title: {
