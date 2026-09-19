@@ -258,3 +258,36 @@ vercel deploy --prod
 ## Environment Variables Template
 
 ### Backend (.env)
+
+APP_NAME="খবরের কাগজ"
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://api.khoborer-kagoj.com
+APP_KEY=base64:xxxxx
+
+DB_CONNECTION=pgsql
+DB_HOST=db.host
+DB_PORT=5432
+DB_DATABASE=newspaper
+DB_USERNAME=username
+DB_PASSWORD=password
+
+CACHE_DRIVER=redis
+REDIS_HOST=redis.host
+REDIS_PASSWORD=password
+
+MAIL_DRIVER=smtp
+MAIL_HOST=smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=username
+MAIL_PASSWORD=password
+
+CORS_ALLOWED_ORIGINS=https://www.khoborer-kagoj.com,https://khoborer-kagoj.com
+
+SANCTUM_STATEFUL_DOMAINS=www.khoborer-kagoj.com,khoborer-kagoj.com
+
+### Frontend (.env.production)
+
+NEXT_PUBLIC_API_URL=https://api.khoborer-kagoj.com/api
+NEXT_PUBLIC_SITE_URL=https://www.khoborer-kagoj.com
+NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX

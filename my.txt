@@ -1,2 +1,1078 @@
 Email: superadmin@newspaper.local
 Password: password123
+
+
+You are continuing an existing newspaper website project.
+
+GitHub repository:
+
+https://github.com/checking001/Newspaper-website
+
+Reference website:
+
+https://www.daily-bangladesh.com/
+
+IMPORTANT:
+
+The current repository already contains work that has been pushed to GitHub.
+
+DO NOT start the project from scratch.
+
+DO NOT delete or replace the existing project blindly.
+
+First inspect the complete existing repository and understand what has already been implemented.
+
+The main problem right now is that the website does NOT yet have a proper professional newspaper-style design/layout.
+
+The final website should have a professional Bangladeshi online newspaper appearance and information architecture inspired by Daily Bangladesh, while using our own branding, content, code, components and visual identity.
+
+We are NOT copying Daily Bangladesh source code, proprietary assets, logo, images, exact CSS, or exact implementation.
+
+Use Daily Bangladesh only as a reference for:
+
+* newspaper information architecture
+* content hierarchy
+* navigation structure
+* section organization
+* news card patterns
+* editorial density
+* homepage composition
+* category page composition
+* article page structure
+* responsive newspaper UX
+
+---
+
+# STEP 0 — FULL REPOSITORY AUDIT FIRST
+
+Before changing code, inspect the repository completely.
+
+Inspect:
+
+* package.json
+* src/
+* public/
+* routes
+* components
+* pages
+* layouts
+* hooks
+* API/service files
+* authentication
+* authorization
+* admin dashboard
+* Super Admin
+* Admin
+* news/article functionality
+* categories
+* subcategories
+* media
+* advertisements
+* database/API integration
+* SEO
+* responsive design
+* existing styles
+* existing CSS/Tailwind/Bootstrap configuration
+* Git history
+* current build configuration
+
+Determine the actual current architecture.
+
+Do NOT assume something exists simply because there is a UI button for it.
+
+---
+
+# STEP 1 — AUDIT REPORT BEFORE IMPLEMENTATION
+
+Before making major changes, report:
+
+## A. Current Technology Stack
+
+Tell me exactly what the repository currently uses.
+
+Example:
+
+* React version
+* Vite/CRA/Next/etc.
+* CSS framework
+* router
+* backend
+* database
+* API
+* authentication
+* state management
+
+Do not guess.
+
+---
+
+## B. EXISTING FEATURES
+
+List everything that is already genuinely implemented.
+
+For example:
+
+* Home
+* Latest
+* News detail
+* Categories
+* Admin
+* Super Admin
+* News creation
+* News editing
+* etc.
+
+---
+
+## C. PARTIALLY IMPLEMENTED FEATURES
+
+Identify features where:
+
+* UI exists but backend does not
+* route exists but page is incomplete
+* button exists but action does not work
+* authorization is incomplete
+* data is hard-coded
+* API is incomplete
+
+---
+
+## D. MISSING FEATURES
+
+List everything that still needs to be built.
+
+---
+
+## E. MULTIPLE ADMIN VERIFICATION
+
+This is mandatory.
+
+Do NOT assume Super Admin = Multiple Admin.
+
+Verify whether the project actually supports multiple separate Admin accounts.
+
+The required architecture is:
+
+Super Admin
+↓
+Multiple Admin accounts
+↓
+Each Admin has their own identity/ownership
+
+Example:
+
+Admin A
+Admin B
+Admin C
+Admin D
+
+Normal Admin:
+
+* can create news
+* can edit their own news
+* can delete their own news according to permission/workflow
+* cannot edit Admin B's news
+* cannot delete Admin B's news
+* cannot manage another Admin
+* cannot access Super Admin functionality
+
+Super Admin:
+
+* can manage all Admins
+* can manage all news
+* can edit/delete/restore any news
+* can manage categories
+* can manage media
+* can manage advertisements
+* can manage homepage
+* can manage settings
+* can manage roles/permissions
+
+IMPORTANT:
+
+Authorization must be enforced server-side/backend-side.
+
+Hiding a button in React is NOT authorization.
+
+At the end of the audit explicitly state one of:
+
+1. Multiple Admin is already fully implemented.
+2. Multiple Admin is partially implemented and requires completion.
+3. Multiple Admin does not exist and must be implemented.
+
+If it is already implemented, do not recreate it unnecessarily.
+
+---
+
+# STEP 2 — DESIGN IS NOW A PRIMARY REQUIREMENT
+
+The existing website currently lacks a proper newspaper design.
+
+This must be fixed.
+
+The target is NOT a generic:
+
+* blog
+* SaaS dashboard
+* card-only website
+* basic React template
+
+It must visually communicate:
+
+"Professional online newspaper/news portal."
+
+Use Daily Bangladesh as the main structural reference.
+
+Reference:
+
+https://www.daily-bangladesh.com/
+
+Again:
+
+DO NOT copy their source code or exact visual assets.
+
+Create an original implementation with our own branding.
+
+---
+
+# STEP 3 — DESKTOP HOMEPAGE DESIGN
+
+Create a full newspaper-style homepage.
+
+The homepage should have approximately this hierarchy:
+
+---
+
+## TOP UTILITY BAR
+
+* Current date
+* Bengali date where practical
+* location/site information if appropriate
+* search
+* social icons if available
+
+---
+
+## MAIN HEADER
+
+LEFT:
+
+* newspaper logo
+
+CENTER:
+
+* brand identity / date / optional slogan
+
+RIGHT:
+
+* search
+* social
+* login/admin link only where appropriate
+
+---
+
+## MAIN NAVIGATION
+
+A strong horizontal newspaper navigation.
+
+Example:
+
+সর্বশেষ
+বাংলাদেশ
+অর্থনীতি
+আন্তর্জাতিক
+দেশজুড়ে
+খেলা
+বিনোদন
+মতামত
+ফিচার
+অন্যান্য
+
+Navigation must support dropdown/mega-menu for subcategories.
+
+Do not make the navigation look like a generic website navbar.
+
+It should look like a professional newspaper navigation bar.
+
+---
+
+## BREAKING NEWS BAR
+
+Create a visually distinct breaking-news ticker.
+
+Example:
+
+ব্রেকিং নিউজ:
+[headline] [headline] [headline]
+
+This should be connected to CMS data if the backend supports it.
+
+Do not hard-code permanent headlines.
+
+---
+
+## TOP ADVERTISEMENT
+
+Create a proper advertisement area.
+
+Do not allow advertisements to destroy the layout.
+
+---
+
+## MAIN NEWS GRID
+
+Create a newspaper-style hero area.
+
+Recommended composition:
+
+LEFT:
+large primary headline
+large featured image
+category
+headline
+short summary
+
+MIDDLE:
+secondary important stories
+medium image + headline
+
+RIGHT:
+latest/breaking/important news list
+
+Do NOT make all three columns identical cards.
+
+There must be visual hierarchy.
+
+---
+
+## LATEST / IMPORTANT NEWS
+
+Create compact headline lists with:
+
+* category
+* headline
+* time
+* thumbnail where useful
+
+---
+
+## SECTION BLOCKS
+
+After the hero area, create editorial sections.
+
+Each section should have:
+
+## SECTION TITLE
+
+Main story
+
+* secondary stories
+* compact headline list
+
+Use varied layouts.
+
+Do NOT repeat exactly the same card grid for every section.
+
+---
+
+# STEP 4 — HOMEPAGE SECTIONS
+
+Create a professional newspaper homepage containing sections such as:
+
+1. বাংলাদেশ
+2. রাজনীতি
+3. অর্থনীতি
+4. আন্তর্জাতিক
+5. দেশজুড়ে
+6. খেলা
+7. বিনোদন
+8. প্রযুক্তি
+9. ফিচার
+10. শিক্ষা
+11. ক্যাম্পাস
+12. চাকরি
+13. আইন-আদালত
+14. ধর্ম
+15. প্রবাস
+16. সাক্ষাৎকার
+17. ছবি
+18. ভিডিও
+19. স্পটলাইট
+20. মতামত
+
+The exact sections should be dynamically configurable from CMS where the current backend architecture supports it.
+
+Do not hard-code article IDs.
+
+---
+
+# STEP 5 — NEWSPAPER-STYLE SECTION DESIGN
+
+For each major section use an appropriate editorial layout.
+
+Example:
+
+## Bangladesh
+
+Large featured article
++
+4 secondary articles
++
+compact latest list
+
+## Sports
+
+Large sports story
++
+2 image stories
++
+score/result/news list if data exists
+
+## Entertainment
+
+Large image
++
+secondary stories
++
+compact headline list
+
+## Technology
+
+Featured story
++
+3 technology cards
++
+latest technology headlines
+
+## Jobs
+
+Compact job/news listing optimized for scanning.
+
+## Video
+
+Large video feature
++
+smaller video cards
+
+## Photo
+
+Large photo feature
++
+photo grid
+
+Do not use identical card structures for every section.
+
+---
+
+# STEP 6 — CATEGORY PAGE DESIGN
+
+Create professional category pages.
+
+Example:
+
+/category/bangladesh
+/category/politics
+/category/sports
+/category/economy
+
+Layout:
+
+CATEGORY HEADER
+↓
+Featured category story
+↓
+News list/grid
+↓
+Popular news sidebar
+↓
+Advertisement
+↓
+Pagination
+
+Each article item should show:
+
+* image
+* category
+* title
+* short excerpt
+* publication time/date
+
+---
+
+# STEP 7 — LATEST PAGE DESIGN
+
+Create:
+
+/latest
+
+The page must look like a real newspaper latest-news page.
+
+Include:
+
+* page title
+* chronological news list
+* category
+* time
+* thumbnail
+* headline
+* pagination
+* sidebar
+* popular/trending section
+* advertisement slots
+
+Do not simply duplicate the homepage.
+
+---
+
+# STEP 8 — ARTICLE DETAIL PAGE
+
+Create a professional news article page.
+
+Structure:
+
+Breadcrumb
+↓
+Category
+↓
+Headline
+↓
+Subtitle/deck
+↓
+Reporter
+↓
+Published date/time
+↓
+Updated date/time
+↓
+Featured image
+↓
+Caption
+↓
+Article body
+↓
+Inline media
+↓
+Tags
+↓
+Social sharing
+↓
+Related news
+↓
+More from category
+↓
+Popular news
+↓
+Advertisement
+
+Article typography must be optimized for long-form reading.
+
+Important:
+
+* proper Bengali font stack
+* readable line height
+* comfortable content width
+* responsive images
+* caption styling
+* blockquote styling
+* embedded video
+* PDF support where applicable
+
+---
+
+# STEP 9 — SEARCH PAGE
+
+Create a professional search interface.
+
+Support:
+
+* keyword
+* category
+* date
+* author
+* pagination
+
+Results should look like newspaper search results, not generic cards.
+
+---
+
+# STEP 10 — ARCHIVE PAGE
+
+Create:
+
+/archive
+
+Filters:
+
+* From date
+* To date
+* category
+* subcategory
+* author
+* keyword
+
+Results:
+
+* thumbnail
+* headline
+* category
+* author
+* date/time
+
+---
+
+# STEP 11 — AUTHOR / REPORTER PAGE
+
+Create:
+
+/author/:slug
+
+Include:
+
+* reporter image
+* name
+* designation
+* biography
+* social links where appropriate
+* published stories
+* pagination
+
+---
+
+# STEP 12 — SPECIAL CONTENT PAGES
+
+Check whether these exist.
+
+If missing, create them:
+
+/sports
+/video
+/photos
+/trending
+/most-read
+/breaking-news
+
+They must be functional pages, not empty placeholders.
+
+---
+
+# STEP 13 — INFORMATIONAL PAGES
+
+Create if missing:
+
+/about
+/contact
+/privacy-policy
+/terms
+/cookie-policy
+/editorial-policy
+/correction-policy
+/advertise
+/careers
+/submit-news
+
+---
+
+# STEP 14 — HEADER / FOOTER
+
+The footer must look like a professional news organization.
+
+Include:
+
+* logo
+* short description
+* important links
+* categories
+* contact information
+* social media
+* privacy
+* terms
+* contact
+* RSS
+* sitemap
+* copyright
+
+Do not make the footer excessively tall.
+
+---
+
+# STEP 15 — MOBILE DESIGN
+
+This is mandatory.
+
+Do NOT simply shrink desktop.
+
+Create a proper mobile newspaper experience.
+
+Mobile header:
+
+* hamburger
+* logo
+* search
+* optional notification
+
+Mobile navigation:
+
+* slide-out menu or appropriate mobile menu
+
+Mobile homepage:
+
+* hero story
+* latest stories
+* section blocks
+* advertisements
+* video
+* photo
+
+Check all layouts at:
+
+320px
+375px
+390px
+414px
+768px
+1024px
+1280px
+1440px+
+
+---
+
+# STEP 16 — VISUAL DESIGN SYSTEM
+
+Create a centralized design system.
+
+Do NOT scatter colors everywhere.
+
+Use CSS variables/theme tokens.
+
+Example conceptual tokens:
+
+--primary
+--secondary
+--text
+--muted
+--border
+--background
+--surface
+--breaking
+--link
+--footer
+
+I will provide the final brand color/logo later.
+
+Therefore make the theme easy to change.
+
+The initial theme should be:
+
+* professional
+* clean
+* editorial
+* high contrast
+* readable
+* modern
+* newspaper-like
+
+---
+
+# STEP 17 — TYPOGRAPHY
+
+Because this is a Bangladeshi newspaper, Bengali typography is critical.
+
+Use a suitable Bengali web font strategy.
+
+Ensure:
+
+* headline font
+* body font
+* navigation font
+* metadata font
+
+are readable.
+
+Do not use an inappropriate default Latin-only font for Bengali content.
+
+Maintain proper:
+
+* font size hierarchy
+* line height
+* letter spacing
+* headline weight
+
+---
+
+# STEP 18 — IMAGE SYSTEM
+
+Create a consistent image system.
+
+Support:
+
+* featured image
+* thumbnail
+* responsive image sizes
+* lazy loading
+* alt text
+* caption
+
+Avoid stretching/cropping important news images incorrectly.
+
+Use `object-fit` appropriately.
+
+Do not load a huge original image when a smaller image is sufficient.
+
+---
+
+# STEP 19 — ADVERTISEMENT DESIGN
+
+Create reserved advertisement slots.
+
+Examples:
+
+* top banner
+* homepage banner
+* sidebar
+* article top
+* article middle
+* category page
+* footer
+* mobile banner
+
+The layout must remain stable when an advertisement is empty.
+
+Avoid cumulative layout shift.
+
+---
+
+# STEP 20 — SUPER ADMIN / CMS UI
+
+Do not forget that the public website and CMS are separate experiences.
+
+CMS should have a professional dashboard.
+
+Super Admin:
+
+* Dashboard
+* News
+* Categories
+* Subcategories
+* Authors/Reporters
+* Media
+* Advertisements
+* Homepage
+* Navigation
+* Users/Admins
+* Roles/Permissions
+* SEO
+* Settings
+* Audit Logs
+
+Normal Admin:
+
+* Dashboard
+* My News
+* Create News
+* Edit My News
+* Media as permitted
+* Profile
+
+The UI must reflect actual permissions.
+
+---
+
+# STEP 21 — MULTIPLE ADMIN OWNERSHIP
+
+If the current code does not already implement this correctly, implement it.
+
+Example:
+
+Admin A creates Article A.
+
+Admin B must not be able to edit Article A.
+
+Admin B must not be able to delete Article A.
+
+Super Admin can edit/delete Article A.
+
+This must work even if Admin B manually changes the URL or API request.
+
+Test for IDOR.
+
+Example conceptual test:
+
+GET /admin/news/123
+
+PUT /admin/news/123
+
+DELETE /admin/news/123
+
+Changing the ID must NOT bypass authorization.
+
+---
+
+# STEP 22 — DESIGN MUST NOT BREAK FUNCTIONALITY
+
+Before modifying components:
+
+Understand current data flow.
+
+If existing backend/API functionality works, preserve it.
+
+If the current project uses mock data, identify it clearly.
+
+Do not silently replace real API data with hard-coded dummy data just to make the design look good.
+
+---
+
+# STEP 23 — DAILY BANGLADESH STRUCTURAL REFERENCE
+
+Use the reference website:
+
+https://www.daily-bangladesh.com/
+
+Study:
+
+* header
+* navigation
+* dropdown navigation
+* breaking news
+* hero news
+* category sections
+* section headers
+* compact news lists
+* sidebar
+* advertisements
+* article page
+* category page
+* latest page
+* footer
+* responsive behavior
+
+The goal is:
+
+"same level of newspaper information architecture and editorial layout"
+
+NOT:
+
+"pixel-for-pixel clone."
+
+The result must have its own design identity.
+
+---
+
+# STEP 24 — PAGE INVENTORY
+
+After completing the redesign, provide a table:
+
+| Page | Already existed | Updated | Newly created | Functional |
+| ---- | --------------- | ------- | ------------- | ---------- |
+
+Include every public page and every CMS page.
+
+No page should be silently omitted.
+
+---
+
+# STEP 25 — FINAL MULTIPLE ADMIN REPORT
+
+At the end explicitly state:
+
+### Multiple Admin
+
+Choose exactly one:
+
+* Already implemented and verified
+* Partially implemented and completed
+* Not implemented and newly implemented
+
+Then explain:
+
+* role structure
+* user ownership
+* Admin permissions
+* Super Admin permissions
+* backend authorization
+* IDOR protection
+* tests performed
+
+---
+
+# STEP 26 — FINAL DESIGN REPORT
+
+Explain:
+
+1. What the website looked like before.
+2. What was wrong with the old layout.
+3. What newspaper-style layout was implemented.
+4. Which pages were redesigned.
+5. Which pages were created.
+6. How the homepage is structured.
+7. How mobile differs from desktop.
+8. How the design references Daily Bangladesh without copying it.
+9. How the theme can later be changed to our branding.
+
+---
+
+# STEP 27 — BUILD AND TEST
+
+After implementation:
+
+Run:
+
+* npm install if required
+* npm run lint if available
+* npm run build
+* tests if available
+
+Fix all build errors.
+
+Check:
+
+* console errors
+* broken routes
+* missing images
+* mobile overflow
+* navigation
+* article pages
+* admin pages
+* authorization
+* forms
+
+Do not finish with known build errors.
+
+---
+
+# STEP 28 — GIT
+
+Before modifying:
+
+git status
+git log --oneline
+
+After major work:
+
+* create logical commits
+* do not overwrite history unnecessarily
+* ensure working code is committed
+
+At the end show:
+
+* changed files
+* commits created
+* current branch
+* build status
+
+---
+
+# MOST IMPORTANT INSTRUCTION
+
+DO NOT START BY CODING.
+
+First inspect the repository.
+
+Then give me the Phase 0 audit.
+
+After I review/approve the audit, implement the redesign and missing features in controlled phases.
+
+The immediate task is:
+
+AUDIT THE CURRENT REPOSITORY AND PREPARE THE IMPLEMENTATION PLAN.
+
+Do not pretend the current project has features that you have not verified.

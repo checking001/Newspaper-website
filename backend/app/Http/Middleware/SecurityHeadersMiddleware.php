@@ -7,42 +7,42 @@ use Illuminate\Http\Request;
 
 class SecurityHeadersMiddleware
 {
+    /**
+     * Handle the incoming request.
+     */
     public function handle(Request $request, Closure $next)
     {
         $response = $next($request);
 
         // Content Security Policy
-        $response->header('Content-Security-Policy', "
-            default-src 'self';
-            script-src 'self' 'unsafe-inline' cdn.jsdelivr.net cdnjs.cloudflare.com;
-            style-src 'self' 'unsafe-inline' fonts.googleapis.com;
-            font-src 'self' fonts.gstatic.com;
-            img-src 'self' data: https:;
-            media-src 'self';
-            connect-src 'self' http://localhost:3000 http://localhost:8000;
-            frame-ancestors 'none';
-            base-uri 'self';
-        ");
+        $csp = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' http://localhost:3000 http://127.0.0.1:3000; frame-ancestors 'none';";
+        $response->header('Content-Security-Policy', $csp);
 
-        // Prevent iframe embedding
+        // X-Frame-Options
         $response->header('X-Frame-Options', 'DENY');
 
-        // Prevent MIME type sniffing
+        // X-Content-Type-Options
         $response->header('X-Content-Type-Options', 'nosniff');
 
-        // Enable XSS protection
+        // X-XSS-Protection
         $response->header('X-XSS-Protection', '1; mode=block');
 
-        // Referrer Policy
+        // Referrer-Policy
         $response->header('Referrer-Policy', 'strict-origin-when-cross-origin');
 
-        // Permissions Policy
+        // Permissions-Policy
         $response->header('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
 
-        // HSTS (Strict-Transport-Security)
-        if (app()->environment() === 'production') {
+        // HSTS (only in production)
+        if (config('app.env') === 'production') {
             $response->header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
         }
+
+        // Allow CORS
+        $response->header('Access-Control-Allow-Origin', 'http://localhost:3000');
+        $response->header('Access-Control-Allow-Credentials', 'true');
+        $response->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+        $response->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
 
         return $response;
     }
