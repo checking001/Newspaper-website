@@ -23,13 +23,10 @@ interface Article {
   content: string
   excerpt: string
   featured_image: string
-  category: { id: number; name: string; slug: string }
-  author: { id: number; name: string; slug: string }
+  category?: { id: number; name: string; slug: string }
+  author?: { id: number; name: string; slug: string }
   published_at: string
-  updated_at: string
   views: number
-  is_featured: boolean
-  is_breaking: boolean
   tags?: Array<{ id: number; name: string; slug: string }>
 }
 
@@ -51,17 +48,15 @@ export default function ArticlePage () {
       try {
         setIsLoading(true)
 
-        // Fetch article by slug
+        // Fetch article
         const res = await fetch(`${API_URL}/articles/${slug}`)
-        if (!res.ok) {
-          throw new Error('Article not found')
-        }
+        if (!res.ok) throw new Error('Article not found')
 
         const data = await res.json()
         const articleData = data.data || data
         setArticle(articleData)
 
-        // Fetch related articles
+        // Fetch related articles if category exists
         if (articleData.category?.slug) {
           try {
             const relatedRes = await fetch(
@@ -72,11 +67,11 @@ export default function ArticlePage () {
               setRelatedArticles(relatedData.data || [])
             }
           } catch (err) {
-            console.error('Failed to fetch related articles:', err)
+            console.error('Failed to fetch related:', err)
           }
         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load article')
+        setError(err instanceof Error ? err.message : 'Failed to load')
       } finally {
         setIsLoading(false)
       }
@@ -113,7 +108,7 @@ export default function ArticlePage () {
           </h1>
           <Link
             href='/'
-            className='inline-block px-[var(--padding-md)] py-[var(--spacing-2)] bg-[var(--color-primary)] text-white rounded-[var(--radius-md)] hover:bg-[var(--color-primary-dark)]'
+            className='inline-block px-[var(--padding-md)] py-[var(--spacing-2)] bg-[var(--color-primary)] text-white rounded-[var(--radius-md)]'
           >
             ← হোম পেজে ফিরুন
           </Link>
@@ -147,26 +142,30 @@ export default function ArticlePage () {
         <article className='max-w-4xl mx-auto'>
           {/* Header */}
           <header className='mb-[var(--margin-lg)]'>
-            <Badge
-              category={article.category.slug as any}
-              size='md'
-              className='mb-[var(--spacing-2)]'
-            >
-              {article.category.name}
-            </Badge>
+            {article.category && (
+              <Badge
+                category={(article.category.slug || 'default') as any}
+                size='md'
+                className='mb-[var(--spacing-2)]'
+              >
+                {article.category.name}
+              </Badge>
+            )}
 
             <h1 className='text-[var(--h1-size-mobile)] md:text-[var(--h1-size-tablet)] lg:text-[var(--h1-size-desktop)] font-bold text-[var(--color-primary)] mb-[var(--spacing-4)] leading-tight'>
               {article.title}
             </h1>
 
-            {/* Meta Info */}
+            {/* Meta */}
             <div className='flex flex-wrap items-center gap-[var(--spacing-4)] pb-[var(--spacing-4)] border-b border-[var(--color-border)]'>
-              <Link
-                href={`/author/${article.author.slug}`}
-                className='font-semibold text-[var(--color-primary)] hover:text-[var(--color-accent)] transition-colors'
-              >
-                {article.author.name}
-              </Link>
+              {article.author && (
+                <Link
+                  href={`/authors/${article.author.slug}`}
+                  className='font-semibold text-[var(--color-primary)] hover:text-[var(--color-accent)]'
+                >
+                  {article.author.name}
+                </Link>
+              )}
               <time className='text-[var(--meta-size)] text-[var(--color-text-tertiary)]'>
                 {formatDate(article.published_at)}
               </time>
@@ -178,7 +177,7 @@ export default function ArticlePage () {
             </div>
           </header>
 
-          {/* Featured Image */}
+          {/* Image */}
           {article.featured_image && (
             <div className='relative w-full h-[300px] md:h-[400px] lg:h-[500px] mb-[var(--margin-lg)] rounded-[var(--radius-lg)] overflow-hidden'>
               <Image
@@ -200,24 +199,18 @@ export default function ArticlePage () {
           )}
 
           {/* Content */}
-          <div className='prose prose-lg max-w-none mb-[var(--margin-lg)]'>
-            <div
-              className='text-[var(--font-size-lg)] text-[var(--color-text-primary)] leading-[1.8] space-y-[var(--margin-md)]'
-              dangerouslySetInnerHTML={{ __html: article.content }}
-            />
+          <div className='text-[var(--font-size-lg)] text-[var(--color-text-primary)] leading-[1.8] space-y-[var(--margin-md)] mb-[var(--margin-lg)]'>
+            <div dangerouslySetInnerHTML={{ __html: article.content }} />
           </div>
 
           {/* Tags */}
           {article.tags && article.tags.length > 0 && (
             <div className='mb-[var(--margin-lg)] pb-[var(--margin-lg)] border-b border-[var(--color-border)]'>
-              <p className='text-[var(--font-size-sm)] font-semibold text-[var(--color-text-primary)] mb-[var(--spacing-2)]'>
-                ট্যাগ:
-              </p>
               <div className='flex flex-wrap gap-[var(--spacing-2)]'>
                 {article.tags.map(tag => (
                   <Link
                     key={tag.id}
-                    href={`/tag/${tag.slug}`}
+                    href={`/tags/${tag.slug}`}
                     className='px-[var(--padding-sm)] py-[var(--spacing-1)] bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] rounded-[var(--radius-md)] hover:bg-[var(--color-primary)] hover:text-white transition-colors text-[var(--font-size-sm)] font-medium'
                   >
                     #{tag.name}
@@ -226,30 +219,6 @@ export default function ArticlePage () {
               </div>
             </div>
           )}
-
-          {/* Social Share */}
-          <div className='mb-[var(--margin-lg)] pb-[var(--margin-lg)] border-b border-[var(--color-border)]'>
-            <SocialShare
-              url={typeof window !== 'undefined' ? window.location.href : ''}
-              title={article.title}
-            />
-          </div>
-
-          {/* About Author */}
-          <div className='bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)] text-white rounded-[var(--radius-lg)] p-[var(--padding-md)] mb-[var(--margin-lg)]'>
-            <h3 className='text-[var(--h5-size-mobile)] font-bold mb-[var(--spacing-2)]'>
-              ✍️ লেখক সম্পর্কে
-            </h3>
-            <p className='text-[var(--font-size-base)] mb-[var(--spacing-2)] opacity-90'>
-              {article.author.name} একজন অভিজ্ঞ সাংবাদিক এবং সম্পাদক।
-            </p>
-            <Link
-              href={`/author/${article.author.slug}`}
-              className='inline-block text-white font-semibold hover:underline'
-            >
-              প্রোফাইল দেখুন →
-            </Link>
-          </div>
         </article>
       </Container>
 
@@ -258,14 +227,23 @@ export default function ArticlePage () {
         <Comment comments={[]} articleId={article.id} />
       </Container>
 
-      {/* Related Articles */}
+      {/* Related */}
       {relatedArticles.length > 0 && (
         <Container
           maxWidth='2xl'
           padding='md'
           className='mb-[var(--margin-xl)]'
         >
-          <RelatedArticles articles={relatedArticles} title='সম্পর্কিত খবর' />
+          <RelatedArticles
+            articles={relatedArticles.map(a => ({
+              ...a,
+              featured_image: a.featured_image || a.featuredImage || '',
+              category: a.category || { name: 'সংবাদ' },
+              author: a.author || { name: 'অজানা' },
+              published_at:
+                a.published_at || a.publishedAt || new Date().toISOString()
+            }))}
+          />
         </Container>
       )}
     </main>

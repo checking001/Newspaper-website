@@ -156,7 +156,7 @@ export default function CategoryPage () {
             </p>
           )}
           <div className='mt-[var(--spacing-4)] text-[var(--meta-size)] text-[var(--color-text-tertiary)]'>
-            মোট {pagination.total} টি খবর
+            মোট {pagination?.total || 0} টি খবর
           </div>
         </div>
       </Container>
@@ -201,9 +201,9 @@ export default function CategoryPage () {
                 </Grid>
 
                 {/* Pagination */}
-                {pagination.last_page > 1 && (
+                {pagination?.last_page && pagination.last_page > 1 && (
                   <Pagination
-                    currentPage={pagination.current_page}
+                    currentPage={pagination.current_page || 1}
                     totalPages={pagination.last_page}
                     baseUrl={`/category/${slug}`}
                   />
