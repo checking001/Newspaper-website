@@ -1,113 +1,189 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { API_URL } from '@/lib/constants'
+import React, { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import {
+  Container,
+  Card,
+  Grid,
+  LoadingSpinner,
+  Badge
+} from '@/components/shared'
+import { adminAPI } from '@/lib/admin-api'
 
-interface Stats {
-  totalArticles: number
-  publishedArticles: number
-  draftArticles: number
-  totalCategories: number
-  totalAuthors: number
+interface DashboardStats {
+  total_articles: number
+  total_admins: number
+  published_articles: number
+  draft_articles: number
+  total_views: number
+  recent_activities: any[]
+  admin_info: {
+    name: string
+    email: string
+    role: string
+    last_login: string
+    is_active: boolean
+  }
 }
 
-export default function DashboardPage () {
-  const [stats, setStats] = useState<Stats>({
-    totalArticles: 0,
-    publishedArticles: 0,
-    draftArticles: 0,
-    totalCategories: 0,
-    totalAuthors: 0
-  })
+export default function AdminDashboard () {
+  const router = useRouter()
+  const [stats, setStats] = useState<DashboardStats | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const loadStats = async () => {
+    const fetchStats = async () => {
       try {
-        const [articles, categories, authors] = await Promise.all([
-          fetch(`${API_URL}/articles`, { credentials: 'include' }).then(r =>
-            r.json()
-          ),
-          fetch(`${API_URL}/categories`, { credentials: 'include' }).then(r =>
-            r.json()
-          ),
-          fetch(`${API_URL}/authors`, { credentials: 'include' }).then(r =>
-            r.json()
-          )
-        ])
+        const token = localStorage.getItem('auth_token')
+        if (!token) {
+          router.push('/admin/login')
+          return
+        }
 
-        const published =
-          articles.data?.filter((a: any) => a.status === 'published').length ||
-          0
-        const draft =
-          articles.data?.filter((a: any) => a.status === 'draft').length || 0
-
-        setStats({
-          totalArticles: articles.data?.length || 0,
-          publishedArticles: published,
-          draftArticles: draft,
-          totalCategories: categories.length || 0,
-          totalAuthors: authors.data?.length || 0
-        })
+        const data = await adminAPI.getDashboardStats(token)
+        setStats(data.data)
       } catch (error) {
-        console.error('Failed to load stats:', error)
+        console.error('Error fetching dashboard stats:', error)
+        router.push('/admin/login')
       } finally {
         setLoading(false)
       }
     }
 
-    loadStats()
-  }, [])
+    fetchStats()
+  }, [router])
+
+  if (loading) {
+    return <LoadingSpinner fullScreen={true} />
+  }
+
+  if (!stats) {
+    return (
+      <Container maxWidth='2xl' padding='md' className='py-[var(--margin-lg)]'>
+        <p className='text-center text-[var(--color-text-secondary)]'>
+          ড্যাশবোর্ড লোড করতে ব্যর্থ
+        </p>
+      </Container>
+    )
+  }
 
   return (
-    <div className='space-y-6'>
-      <h1 className='text-3xl font-bold text-brand-primary'>ড্যাশবোর্ড</h1>
-
-      {loading ? (
-        <div className='text-center py-12'>লোড হচ্ছে...</div>
-      ) : (
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4'>
-          {/* Total Articles */}
-          <div className='bg-white p-6 rounded-lg shadow border-l-4 border-brand-accent'>
-            <div className='text-3xl font-bold text-brand-accent'>
-              {stats.totalArticles}
-            </div>
-            <div className='text-gray-600'>মোট খবর</div>
+    <Container maxWidth='2xl' padding='md' className='py-[var(--margin-lg)]'>
+      {/* Admin Info Card */}
+      <Card variant='elevated' padding='lg' className='mb-[var(--margin-lg)]'>
+        <div className='flex justify-between items-start'>
+          <div>
+            <h2 className='text-[var(--h2-size-mobile)] font-bold text-[var(--color-primary)]'>
+              স্বাগতম, {stats.admin_info.name}
+            </h2>
+            <p className='text-[var(--font-size-base)] text-[var(--color-text-secondary)] mt-[var(--spacing-1)]'>
+              📧 {stats.admin_info.email}
+            </p>
           </div>
-
-          {/* Published */}
-          <div className='bg-white p-6 rounded-lg shadow border-l-4 border-brand-success'>
-            <div className='text-3xl font-bold text-brand-success'>
-              {stats.publishedArticles}
-            </div>
-            <div className='text-gray-600'>প্রকাশিত</div>
-          </div>
-
-          {/* Draft */}
-          <div className='bg-white p-6 rounded-lg shadow border-l-4 border-brand-warning'>
-            <div className='text-3xl font-bold text-brand-warning'>
-              {stats.draftArticles}
-            </div>
-            <div className='text-gray-600'>ড্রাফট</div>
-          </div>
-
-          {/* Categories */}
-          <div className='bg-white p-6 rounded-lg shadow border-l-4 border-blue-500'>
-            <div className='text-3xl font-bold text-blue-500'>
-              {stats.totalCategories}
-            </div>
-            <div className='text-gray-600'>ক্যাটাগরি</div>
-          </div>
-
-          {/* Authors */}
-          <div className='bg-white p-6 rounded-lg shadow border-l-4 border-purple-500'>
-            <div className='text-3xl font-bold text-purple-500'>
-              {stats.totalAuthors}
-            </div>
-            <div className='text-gray-600'>লেখক</div>
+          <div className='text-right'>
+            <Badge
+              category='default'
+              size='md'
+              className='bg-green-600 text-white'
+            >
+              {stats.admin_info.role === 'super_admin'
+                ? '🔐 সুপার এডমিন'
+                : '👤 এডমিন'}
+            </Badge>
+            <p className='text-[var(--font-size-xs)] text-[var(--color-text-tertiary)] mt-[var(--spacing-2)]'>
+              শেষ লগইন:{' '}
+              {stats.admin_info.last_login
+                ? new Date(stats.admin_info.last_login).toLocaleDateString(
+                    'bn-BD'
+                  )
+                : 'কখনো নয়'}
+            </p>
           </div>
         </div>
-      )}
-    </div>
+      </Card>
+
+      {/* Statistics Grid */}
+      <Grid columns={2} gap='lg' className='mb-[var(--margin-lg)]'>
+        <Card variant='outlined' padding='lg'>
+          <p className='text-[var(--font-size-sm)] text-[var(--color-text-tertiary)] mb-[var(--spacing-2)]'>
+            মোট নিবন্ধ
+          </p>
+          <h3 className='text-[2.5rem] font-bold text-[var(--color-primary)]'>
+            {stats.total_articles}
+          </h3>
+        </Card>
+
+        <Card variant='outlined' padding='lg'>
+          <p className='text-[var(--font-size-sm)] text-[var(--color-text-tertiary)] mb-[var(--spacing-2)]'>
+            প্রকাশিত
+          </p>
+          <h3 className='text-[2.5rem] font-bold text-green-600'>
+            {stats.published_articles}
+          </h3>
+        </Card>
+
+        <Card variant='outlined' padding='lg'>
+          <p className='text-[var(--font-size-sm)] text-[var(--color-text-tertiary)] mb-[var(--spacing-2)]'>
+            ড্রাফট
+          </p>
+          <h3 className='text-[2.5rem] font-bold text-yellow-600'>
+            {stats.draft_articles}
+          </h3>
+        </Card>
+
+        <Card variant='outlined' padding='lg'>
+          <p className='text-[var(--font-size-sm)] text-[var(--color-text-tertiary)] mb-[var(--spacing-2)]'>
+            মোট প্রশাসক
+          </p>
+          <h3 className='text-[2.5rem] font-bold text-blue-600'>
+            {stats.total_admins}
+          </h3>
+        </Card>
+
+        <Card variant='outlined' padding='lg' className='col-span-2'>
+          <p className='text-[var(--font-size-sm)] text-[var(--color-text-tertiary)] mb-[var(--spacing-2)]'>
+            মোট ভিউ
+          </p>
+          <h3 className='text-[2.5rem] font-bold text-purple-600'>
+            {(stats.total_views || 0).toLocaleString('bn-BD')}
+          </h3>
+        </Card>
+      </Grid>
+
+      {/* Recent Activities */}
+      <Card variant='elevated' padding='lg'>
+        <h3 className='text-[var(--h4-size-mobile)] font-bold text-[var(--color-primary)] mb-[var(--margin-md)]'>
+          সাম্প্রতিক কার্যকলাপ
+        </h3>
+
+        {stats.recent_activities && stats.recent_activities.length > 0 ? (
+          <div className='space-y-[var(--spacing-3)]'>
+            {stats.recent_activities.map((activity: any, idx: number) => (
+              <div
+                key={idx}
+                className='flex justify-between items-start pb-[var(--spacing-3)] border-b border-[var(--color-border)] last:border-0'
+              >
+                <div>
+                  <p className='text-[var(--font-size-base)] text-[var(--color-text-primary)] font-medium'>
+                    {activity.user?.name} - {activity.action}
+                  </p>
+                  <p className='text-[var(--font-size-sm)] text-[var(--color-text-tertiary)]'>
+                    {activity.model_type} ID: {activity.model_id}
+                  </p>
+                </div>
+                <p className='text-[var(--font-size-xs)] text-[var(--color-text-tertiary)]'>
+                  {new Date(activity.created_at).toLocaleDateString('bn-BD')}
+                </p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className='text-[var(--font-size-base)] text-[var(--color-text-secondary)]'>
+            কোনো কার্যকলাপ নেই
+          </p>
+        )}
+      </Card>
+    </Container>
   )
 }

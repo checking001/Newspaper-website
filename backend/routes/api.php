@@ -1,5 +1,5 @@
-<?php
 
+<?php
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ArticleController;
@@ -11,6 +11,9 @@ use App\Http\Controllers\PublicArticleController;
 use App\Http\Controllers\PublicCategoryController;
 use App\Http\Controllers\PublicPageController;
 use App\Http\Controllers\SeoController;
+use App\Http\Controllers\Api\AdminController;
+use App\Http\Controllers\Api\AdminDashboardController;
+use App\Http\Controllers\Api\AdminNotificationController;
 
 // Health check
 Route::get('/health', function () {
@@ -54,13 +57,6 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::get('/auth/user', [AuthController::class, 'user']);
 
-    // Admin dashboard
-    Route::get('/dashboard', function () {
-        return response()->json([
-            'message' => 'Admin dashboard - operational',
-        ]);
-    });
-
     // Admin CRUD Operations
     Route::apiResource('articles', ArticleController::class);
     Route::post('articles/{article}/publish', [ArticleController::class, 'publish']);
@@ -70,6 +66,32 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::apiResource('authors', AuthorController::class);
     Route::apiResource('tags', TagController::class);
     Route::apiResource('media', MediaController::class);
+});
+Route::middleware('auth:sanctum')->group(function () {
+    Route::prefix('admin')->group(function () {
+    // Dashboard & Profile
+    Route::get('/dashboard', [AdminDashboardController::class, 'statistics']);
+    Route::get('/profile', [AdminDashboardController::class, 'profile']);
+    Route::put('/profile', [AdminDashboardController::class, 'updateProfile']);
+    
+    // Activity & Analytics
+    Route::get('/activity-report', [AdminDashboardController::class, 'activityReport']);
+    Route::get('/performance-metrics', [AdminDashboardController::class, 'performanceMetrics']);
+    Route::get('/export-logs', [AdminDashboardController::class, 'exportActivityLogs']);
+    
+    // Search & Bulk Actions
+    Route::get('/search', [AdminDashboardController::class, 'searchAdmins']);
+    Route::patch('/bulk-toggle-status', [AdminDashboardController::class, 'bulkToggleStatus']);
+    
+    // Notifications
+    Route::prefix('notifications')->group(function () {
+        Route::get('/', [AdminNotificationController::class, 'index']);
+        Route::patch('/{notification}/read', [AdminNotificationController::class, 'markAsRead']);
+        Route::patch('/mark-all-read', [AdminNotificationController::class, 'markAllAsRead']);
+        Route::delete('/{notification}', [AdminNotificationController::class, 'destroy']);
+        Route::delete('/', [AdminNotificationController::class, 'clearAll']);
+    });
+    });
 });
 
 // Fallback Route

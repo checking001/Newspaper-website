@@ -1,84 +1,131 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
-import Link from 'next/link'
-import ArticleCard from '@/components/ArticleCard'
-import Pagination from '@/components/Pagination'
-import { PublicApiService, Article } from '@/lib/public-api'
+import {
+  Container,
+  Grid,
+  ArticleCard,
+  SearchBox,
+  LoadingSpinner,
+  EmptyState,
+  Breadcrumb
+} from '@/components/shared'
+
+interface Article {
+  id: number
+  title: string
+  slug: string
+  excerpt: string
+  featured_image: string
+  category: { name: string }
+  author: { name: string }
+  published_at: string
+}
+
+interface ApiResponse {
+  data: Article[]
+}
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL
 
 export default function SearchPage () {
   const searchParams = useSearchParams()
   const query = searchParams.get('q') || ''
-  const page = parseInt(searchParams.get('page') || '1')
 
   const [articles, setArticles] = useState<Article[]>([])
-  const [pagination, setPagination] = useState({
-    current_page: 1,
-    last_page: 1
-  })
-  const [loading, setLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true)
+  const [searchQuery, setSearchQuery] = useState(query)
 
   useEffect(() => {
     if (!query) {
-      setLoading(false)
+      setIsLoading(false)
       return
     }
 
-    const search = async () => {
+    const loadResults = async () => {
+      setIsLoading(true)
       try {
-        const data = await PublicApiService.searchArticles(query, page)
-        setArticles(data.data || [])
-        setPagination({
-          current_page: data.current_page || 1,
-          last_page: data.last_page || 1
-        })
-      } catch (error) {
-        console.error('Search failed:', error)
+        const res = await fetch(
+          `${API_URL}/articles?search=${encodeURIComponent(
+            query
+          )}&limit=20&status=published`
+        )
+        if (res.ok) {
+          const data: ApiResponse = await res.json()
+          setArticles(data.data || [])
+        }
+      } catch (err) {
+        console.error('Search failed:', err)
       } finally {
-        setLoading(false)
+        setIsLoading(false)
       }
     }
 
-    search()
-  }, [query, page])
+    loadResults()
+  }, [query])
+
+  const handleSearch = (newQuery: string) => {
+    setSearchQuery(newQuery)
+    const params = new URLSearchParams()
+    params.append('q', newQuery)
+    window.history.pushState(null, '', `/search?${params.toString()}`)
+  }
 
   return (
-    <main className='space-y-8 max-w-4xl mx-auto'>
-      <div>
-        <h1 className='text-4xl font-bold text-brand-primary mb-2'>
-          অনুসন্ধান ফলাফল
+    <main className='min-h-screen bg-[var(--color-bg-primary)]'>
+      <Container maxWidth='2xl' padding='md' className='pt-[var(--margin-md)]'>
+        <Breadcrumb items={[{ label: 'হোম', href: '/' }, { label: 'খোঁজ' }]} />
+      </Container>
+
+      <Container maxWidth='2xl' padding='md' className='mb-[var(--margin-xl)]'>
+        <h1 className='text-[var(--h2-size-mobile)] md:text-[var(--h1-size-tablet)] font-bold text-[var(--color-primary)] mb-[var(--spacing-4)]'>
+          🔍 খোঁজ ফলাফল
         </h1>
-        <p className='text-gray-600'>
-          "{query}" এর জন্য {articles.length} টি ফলাফল পাওয়া গেছে
-        </p>
-      </div>
+        <SearchBox onSearch={handleSearch} placeholder='খবর খুঁজুন...' />
+      </Container>
 
-      {!query ? (
-        <div className='text-center py-12 text-gray-500'>
-          অনুসন্ধান করতে উপরে কীওয়ার্ড প্রবেশ করুন
-        </div>
-      ) : loading ? (
-        <div className='text-center py-12'>খোঁজা হচ্ছে...</div>
-      ) : articles.length === 0 ? (
-        <div className='text-center py-12 text-gray-500'>
-          কোনো খবর পাওয়া যায়নি। অন্য কীওয়ার্ড চেষ্টা করুন।
-        </div>
-      ) : (
-        <>
-          <div className='space-y-4'>
-            {articles.map(article => (
-              <ArticleCard key={article.id} article={article} layout='list' />
-            ))}
-          </div>
-
-          <Pagination
-            currentPage={pagination.current_page}
-            totalPages={pagination.last_page}
-            baseUrl={`/search?q=${encodeURIComponent(query)}`}
+      <Container maxWidth='2xl' padding='md'>
+        {isLoading ? (
+          <LoadingSpinner text='খোঁজ হচ্ছে...' />
+        ) : query ? (
+          articles.length > 0 ? (
+            <>
+              <p className='text-[var(--meta-size)] text-[var(--color-text-tertiary)] mb-[var(--margin-lg)]'>
+                "{query}" এর জন্য {articles.length} টি ফলাফল পাওয়া গেছে
+              </p>
+              <Grid columns={2} gap='lg'>
+                {articles.map(article => (
+                  <ArticleCard
+                    key={article.id}
+                    id={article.id}
+                    title={article.title}
+                    slug={article.slug}
+                    excerpt={article.excerpt}
+                    featuredImage={article.featured_image}
+                    category={article.category.name}
+                    author={article.author.name}
+                    publishedAt={article.published_at}
+                    variant='secondary'
+                  />
+                ))}
+              </Grid>
+            </>
+          ) : (
+            <EmptyState
+              icon='🔍'
+              title='কোনো ফলাফল পাওয়া যায়নি'
+              description={`"${query}" এর জন্য কোনো খবর খুঁজে পাওয়া যায়নি।`}
+            />
+          )
+        ) : (
+          <EmptyState
+            icon='🔍'
+            title='খোঁজ করুন'
+            description='উপরে সার্চ বক্সে একটি প্রশ্ন লিখুন।'
           />
-        </>
-      )}
+        )}
+      </Container>
     </main>
   )
 }

@@ -64,4 +64,29 @@ class User extends Authenticatable
     {
         return $this->hasMany(ArticleRevision::class, 'changed_by');
     }
+    public function activityLogs()
+    {
+        return $this->hasMany(ActivityLog::class);
+    }
+
+    public function permissions()
+    {
+        return $this->belongsToMany(Permission::class);
+    }
+
+    public function syncPermissions(array $permissions)
+    {
+        $permissionIds = Permission::whereIn('name', $permissions)->pluck('id');
+        $this->permissions()->sync($permissionIds);
+    }
+    public function notifications()
+{
+    return $this->hasMany(AdminNotification::class);
+}
+
+public function roles()
+{
+    return $this->belongsToMany(Role::class);
+}
+
 }

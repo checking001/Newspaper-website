@@ -2,15 +2,23 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Role extends Model
 {
-    protected $fillable = ['name', 'guard_name'];
+    use HasFactory;
 
-    public function users(): HasMany
+    protected $fillable = ['name', 'description', 'is_system'];
+    public $timestamps = false;
+
+    public function permissions()
     {
-        return $this->hasMany(User::class);
+        return $this->belongsToMany(Permission::class);
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class);
     }
 }
