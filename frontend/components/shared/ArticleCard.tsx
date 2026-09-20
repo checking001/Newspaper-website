@@ -110,6 +110,11 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
             <h4 className='text-[var(--h3-size-mobile)] md:text-[var(--h3-size-tablet)] font-bold text-[var(--color-primary)] mb-[var(--spacing-2)] group-hover:text-[var(--color-accent)] transition-colors line-clamp-2'>
               {title}
             </h4>
+            {excerpt && (
+              <p className='text-[var(--font-size-sm)] md:text-[var(--font-size-base)] text-[var(--color-text-secondary)] mb-[var(--spacing-2)] line-clamp-2 md:line-clamp-3'>
+                {excerpt}
+              </p>
+            )}
             <div className='flex items-center gap-[var(--spacing-4)] text-[var(--meta-size)] text-[var(--color-text-tertiary)]'>
               {author && <span>{author}</span>}
               {publishedAt && <time>{formatDate(publishedAt)}</time>}
@@ -151,7 +156,6 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
       </Link>
     )
   }
-
   // List Variant
   return (
     <Link href={`/articles/${slug}`}>
@@ -170,6 +174,11 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
             <h5 className='text-[var(--font-size-lg)] font-bold text-[var(--color-primary)] mb-[var(--spacing-2)] group-hover:text-[var(--color-accent)] transition-colors line-clamp-2'>
               {title}
             </h5>
+            {excerpt && (
+              <p className='text-[var(--font-size-xs)] md:text-[var(--font-size-sm)] text-[var(--color-text-tertiary)] mb-[var(--spacing-2)] line-clamp-2'>
+                {excerpt?.substring(0, 80)}...
+              </p>
+            )}
             <time className='text-[var(--meta-size)] text-[var(--color-text-tertiary)]'>
               {formatDate(publishedAt)}
             </time>

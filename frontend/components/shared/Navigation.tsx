@@ -11,87 +11,42 @@ interface NavItem {
 
 interface NavigationProps {
   items: NavItem[]
-  className?: string
+  showSearch?: boolean
 }
 
-export const Navigation: React.FC<NavigationProps> = ({
+export default function Navigation ({
   items,
-  className = ''
-}) => {
-  const [openMenu, setOpenMenu] = useState<string | null>(null)
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  showSearch = false
+}: NavigationProps) {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [openSubmenu, setOpenSubmenu] = useState<string | null>(null)
 
   const toggleSubmenu = (label: string) => {
-    setOpenMenu(openMenu === label ? null : label)
+    setOpenSubmenu(openSubmenu === label ? null : label)
   }
 
   return (
-    <nav className={`w-full ${className}`}>
+    <nav className='bg-[var(--color-bg-primary)] border-b border-[var(--color-border)]'>
       {/* Desktop Navigation */}
-      <div className='hidden md:flex items-center gap-[var(--spacing-6)]'>
-        {items.map(item => (
-          <div
-            key={item.label}
-            className='relative group'
-            onMouseEnter={() => setOpenMenu(item.label)}
-            onMouseLeave={() => setOpenMenu(null)}
-          >
-            <Link
-              href={item.href}
-              className='text-[var(--color-text-primary)] hover:text-[var(--color-primary)] font-semibold py-[var(--spacing-3)] transition-colors'
-            >
-              {item.label}
-            </Link>
-
-            {/* Submenu */}
-            {item.submenu && (
-              <div className='absolute left-0 top-full hidden group-hover:block bg-[var(--color-bg-primary)] border border-[var(--color-border)] rounded-[var(--radius-lg)] shadow-[var(--shadow-lg)] min-w-[200px] z-50'>
-                {item.submenu.map(subitem => (
-                  <Link
-                    key={subitem.label}
-                    href={subitem.href}
-                    className='block px-[var(--padding-md)] py-[var(--spacing-2)] text-[var(--color-text-primary)] hover:bg-[var(--color-bg-secondary)] hover:text-[var(--color-primary)] transition-colors first:rounded-t-[var(--radius-lg)] last:rounded-b-[var(--radius-lg)]'
-                  >
-                    {subitem.label}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-
-      {/* Mobile Navigation Button */}
-      <button
-        className='md:hidden flex items-center justify-center w-10 h-10 rounded-[var(--radius-md)] bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)]'
-        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        aria-label='Toggle mobile menu'
-      >
-        <span className='text-xl'>☰</span>
-      </button>
-
-      {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div className='md:hidden absolute top-full left-0 right-0 bg-[var(--color-bg-primary)] border-b border-[var(--color-border)] z-50'>
+      <div className='hidden md:flex items-center justify-between px-[var(--margin-md)] py-[var(--spacing-3)]'>
+        <div className='flex items-center gap-[var(--spacing-4)]'>
           {items.map(item => (
-            <div key={item.label}>
+            <div key={item.label} className='group relative'>
               <Link
                 href={item.href}
-                className='block px-[var(--padding-md)] py-[var(--spacing-3)] text-[var(--color-text-primary)] hover:bg-[var(--color-bg-secondary)] hover:text-[var(--color-primary)] border-b border-[var(--color-border)] transition-colors'
-                onClick={() => setIsMobileMenuOpen(false)}
+                className='text-[var(--font-size-base)] font-medium text-[var(--color-text-primary)] hover:text-[var(--color-primary)] transition-colors'
               >
                 {item.label}
               </Link>
 
-              {/* Mobile Submenu */}
+              {/* Submenu */}
               {item.submenu && (
-                <div className='bg-[var(--color-bg-secondary)]'>
+                <div className='absolute left-0 top-full hidden group-hover:block bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-lg shadow-lg min-w-max z-50'>
                   {item.submenu.map(subitem => (
                     <Link
                       key={subitem.label}
                       href={subitem.href}
-                      className='block px-[var(--padding-lg)] py-[var(--spacing-2)] text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] border-b border-[var(--color-border)] last:border-0 transition-colors'
-                      onClick={() => setIsMobileMenuOpen(false)}
+                      className='block px-[var(--spacing-4)] py-[var(--spacing-2)] text-[var(--font-size-sm)] text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-primary)] first:rounded-t-lg last:rounded-b-lg transition-colors'
                     >
                       {subitem.label}
                     </Link>
@@ -101,9 +56,85 @@ export const Navigation: React.FC<NavigationProps> = ({
             </div>
           ))}
         </div>
-      )}
+
+        {showSearch && (
+          <input
+            type='text'
+            placeholder='খুঁজুন...'
+            className='px-[var(--spacing-3)] py-[var(--spacing-2)] border border-[var(--color-border)] rounded-lg text-[var(--font-size-base)] text-[var(--color-text-primary)] bg-[var(--color-bg-secondary)]'
+          />
+        )}
+      </div>
+
+      {/* Mobile Navigation */}
+      <div className='md:hidden'>
+        <div className='flex items-center justify-between px-[var(--margin-md)] py-[var(--spacing-3)]'>
+          <h2 className='text-[var(--h5-size-mobile)] font-bold text-[var(--color-primary)]'>
+            খবরের কাগজ
+          </h2>
+
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className='p-[var(--spacing-2)] rounded-lg hover:bg-[var(--color-bg-secondary)]'
+            aria-label='মেনু'
+          >
+            {mobileMenuOpen ? '✕' : '☰'}
+          </button>
+        </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className='border-t border-[var(--color-border)] bg-[var(--color-bg-secondary)]'>
+            {items.map(item => (
+              <div key={item.label}>
+                <div className='flex items-center justify-between px-[var(--margin-md)] py-[var(--spacing-3)] border-b border-[var(--color-border)]'>
+                  <Link
+                    href={item.href}
+                    className='text-[var(--font-size-base)] font-medium text-[var(--color-text-primary)] flex-1'
+                    onClick={() => item.submenu && toggleSubmenu(item.label)}
+                  >
+                    {item.label}
+                  </Link>
+
+                  {item.submenu && (
+                    <button
+                      onClick={() => toggleSubmenu(item.label)}
+                      className='ml-[var(--spacing-2)] text-[var(--color-primary)]'
+                    >
+                      {openSubmenu === item.label ? '−' : '+'}
+                    </button>
+                  )}
+                </div>
+
+                {/* Mobile Submenu */}
+                {item.submenu && openSubmenu === item.label && (
+                  <div className='bg-[var(--color-bg-primary)] border-b border-[var(--color-border)]'>
+                    {item.submenu.map(subitem => (
+                      <Link
+                        key={subitem.label}
+                        href={subitem.href}
+                        className='block px-[var(--spacing-4)] py-[var(--spacing-2)] text-[var(--font-size-sm)] text-[var(--color-text-secondary)] border-b border-[var(--color-border)] last:border-0'
+                      >
+                        {subitem.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+
+            {showSearch && (
+              <div className='p-[var(--margin-md)] border-t border-[var(--color-border)]'>
+                <input
+                  type='text'
+                  placeholder='খুঁজুন...'
+                  className='w-full px-[var(--spacing-3)] py-[var(--spacing-2)] border border-[var(--color-border)] rounded-lg text-[var(--font-size-base)] text-[var(--color-text-primary)] bg-[var(--color-bg-tertiary)]'
+                />
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </nav>
   )
 }
-
-export default Navigation

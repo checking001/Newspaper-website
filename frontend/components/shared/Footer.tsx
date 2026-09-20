@@ -1,50 +1,27 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
-
-interface FooterLink {
-  label: string
-  href: string
-}
 
 interface FooterSection {
   title: string
-  links: FooterLink[]
+  links: Array<{ label: string; href: string }>
 }
 
 interface FooterProps {
-  sections?: FooterSection[]
-  siteName?: string
-  copyright?: string
-  className?: string
+  siteName: string
+  sections: FooterSection[]
+  copyright: string
 }
 
-export const Footer: React.FC<FooterProps> = ({
-  sections = [],
-  siteName = 'খবরের কাগজ',
-  copyright = `© ${new Date().getFullYear()} ${siteName}. সকল অধিকার সংরক্ষিত।`,
-  className = ''
-}) => {
-  return (
-    <footer
-      className={`bg-[var(--color-bg-primary)] border-t border-[var(--color-border)] mt-[var(--margin-xl)] ${className}`}
-    >
-      {/* Main Footer Content */}
-      <div className='px-[var(--padding-md)] py-[var(--padding-lg)] max-w-[1280px] mx-auto'>
-        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-[var(--spacing-6)] mb-[var(--margin-lg)]'>
-          {/* About Section */}
-          <div>
-            <h3 className='text-[var(--h4-size-mobile)] font-bold text-[var(--color-primary)] mb-[var(--spacing-3)]'>
-              {siteName}
-            </h3>
-            <p className='text-[var(--font-size-sm)] text-[var(--color-text-secondary)] leading-relaxed'>
-              আমরা বাংলাদেশের প্রথম সারির ডিজিটাল সংবাদপত্র। আপনার বিশ্বস্ত
-              সংবাদ উৎস।
-            </p>
-          </div>
+export default function Footer ({ siteName, sections, copyright }: FooterProps) {
+  const [expandedSection, setExpandedSection] = useState<string | null>(null)
 
-          {/* Footer Sections */}
+  return (
+    <footer className='bg-[var(--color-bg-secondary)] border-t border-[var(--color-border)] py-[var(--margin-lg)]'>
+      <div className='max-w-6xl mx-auto px-[var(--margin-md)]'>
+        {/* Desktop Grid */}
+        <div className='hidden md:grid grid-cols-3 gap-[var(--margin-lg)] mb-[var(--margin-lg)]'>
           {sections.map(section => (
             <div key={section.title}>
               <h4 className='text-[var(--h5-size-mobile)] font-bold text-[var(--color-primary)] mb-[var(--spacing-3)]'>
@@ -52,10 +29,10 @@ export const Footer: React.FC<FooterProps> = ({
               </h4>
               <ul className='space-y-[var(--spacing-2)]'>
                 {section.links.map(link => (
-                  <li key={link.href}>
+                  <li key={link.label}>
                     <Link
                       href={link.href}
-                      className='text-[var(--font-size-sm)] text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors'
+                      className='text-[var(--font-size-base)] text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors'
                     >
                       {link.label}
                     </Link>
@@ -66,52 +43,100 @@ export const Footer: React.FC<FooterProps> = ({
           ))}
         </div>
 
-        {/* Divider */}
-        <div className='border-t border-[var(--color-border)] pt-[var(--padding-md)]'>
+        {/* Mobile Accordion */}
+        <div className='md:hidden space-y-[var(--spacing-2)] mb-[var(--margin-lg)]'>
+          {sections.map(section => (
+            <div
+              key={section.title}
+              className='border border-[var(--color-border)] rounded-lg overflow-hidden'
+            >
+              <button
+                onClick={() =>
+                  setExpandedSection(
+                    expandedSection === section.title ? null : section.title
+                  )
+                }
+                className='w-full flex justify-between items-center px-[var(--spacing-3)] py-[var(--spacing-2)] bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-primary)]'
+              >
+                <h4 className='text-[var(--h5-size-mobile)] font-bold text-[var(--color-primary)]'>
+                  {section.title}
+                </h4>
+                <span className='text-[var(--color-text-secondary)]'>
+                  {expandedSection === section.title ? '−' : '+'}
+                </span>
+              </button>
+
+              {expandedSection === section.title && (
+                <ul className='space-y-[var(--spacing-2)] p-[var(--spacing-3)]'>
+                  {section.links.map(link => (
+                    <li key={link.label}>
+                      <Link
+                        href={link.href}
+                        className='text-[var(--font-size-base)] text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors'
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Bottom Section */}
+        <div className='border-t border-[var(--color-border)] pt-[var(--spacing-4)]'>
+          <div className='flex flex-col md:flex-row justify-between items-center gap-[var(--spacing-4)] text-[var(--font-size-sm)] text-[var(--color-text-tertiary)]'>
+            <p>{copyright}</p>
+
+            <div className='flex gap-[var(--spacing-3)]'>
+              <Link
+                href='/privacy'
+                className='hover:text-[var(--color-primary)]'
+              >
+                গোপনীয়তা
+              </Link>
+              <Link href='/terms' className='hover:text-[var(--color-primary)]'>
+                শর্তাবলী
+              </Link>
+              <Link
+                href='/contact'
+                className='hover:text-[var(--color-primary)]'
+              >
+                যোগাযোগ
+              </Link>
+            </div>
+          </div>
+
           {/* Social Links */}
-          <div className='flex items-center justify-center gap-[var(--spacing-4)] mb-[var(--spacing-4)]'>
+          <div className='flex justify-center gap-[var(--spacing-3)] mt-[var(--spacing-4)]'>
             <a
-              href='https://facebook.com'
-              target='_blank'
-              rel='noopener noreferrer'
-              className='text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors'
+              href='#'
+              className='text-[var(--color-text-secondary)] hover:text-[var(--color-primary)]'
             >
-              f
+              📘
             </a>
             <a
-              href='https://twitter.com'
-              target='_blank'
-              rel='noopener noreferrer'
-              className='text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors'
+              href='#'
+              className='text-[var(--color-text-secondary)] hover:text-[var(--color-primary)]'
             >
-              𝕏
+              🐦
             </a>
             <a
-              href='https://instagram.com'
-              target='_blank'
-              rel='noopener noreferrer'
-              className='text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors'
+              href='#'
+              className='text-[var(--color-text-secondary)] hover:text-[var(--color-primary)]'
             >
               📷
             </a>
             <a
-              href='https://youtube.com'
-              target='_blank'
-              rel='noopener noreferrer'
-              className='text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors'
+              href='#'
+              className='text-[var(--color-text-secondary)] hover:text-[var(--color-primary)]'
             >
               ▶️
             </a>
           </div>
-
-          {/* Copyright */}
-          <p className='text-center text-[var(--font-size-xs)] text-[var(--color-text-tertiary)]'>
-            {copyright}
-          </p>
         </div>
       </div>
     </footer>
   )
 }
-
-export default Footer
