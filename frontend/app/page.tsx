@@ -14,6 +14,7 @@ import {
   SkeletonLoader,
   RelatedArticles
 } from '@/components/shared'
+import { API_URL } from '@/lib/constants'
 
 interface Article {
   id: number
@@ -44,7 +45,36 @@ interface SectionData {
   articles: Article[]
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL
+const normalizeArticles = (value: unknown): Article[] => {
+  const articles = Array.isArray(value)
+    ? value
+    : (value as { data?: unknown } | null)?.data
+
+  if (!Array.isArray(articles)) return []
+
+  return articles
+    .filter((article): article is Record<string, any> =>
+      Boolean(article && typeof article === 'object')
+    )
+    .filter(article => article.id && article.slug && article.title)
+    .map(article => ({
+      id: Number(article.id),
+      title: String(article.title),
+      slug: String(article.slug),
+      excerpt: String(article.excerpt ?? article.summary ?? ''),
+      featured_image: String(article.featured_image ?? ''),
+      category: article.category ?? {
+        id: 0,
+        name: 'সাধারণ',
+        slug: 'general'
+      },
+      author: article.author ?? { id: 0, name: 'খবরের কাগজ' },
+      published_at: String(article.published_at ?? article.created_at ?? ''),
+      views: Number(article.views ?? 0),
+      is_featured: Boolean(article.is_featured),
+      is_breaking: Boolean(article.is_breaking)
+    }))
+}
 
 async function getHomepageData () {
   try {
@@ -63,15 +93,14 @@ async function getHomepageData () {
 async function getArticlesByCategory (categorySlug: string, limit: number = 6) {
   try {
     const response = await fetch(
-      `${API_URL}/articles?category=${categorySlug}&limit=${limit}&status=published`,
+      `${API_URL}/articles?category_slug=${categorySlug}&limit=${limit}&status=published`,
       {
         next: { revalidate: 300 }
       }
     )
 
     if (!response.ok) throw new Error('Failed to fetch')
-    const data: ApiResponse = await response.json()
-    return data.data || []
+    return normalizeArticles(await response.json())
   } catch (error) {
     console.error(`Error fetching ${categorySlug} articles:`, error)
     return []
@@ -88,8 +117,7 @@ async function getTrendingArticles (limit: number = 5) {
     )
 
     if (!response.ok) throw new Error('Failed to fetch')
-    const data: ApiResponse = await response.json()
-    return data.data || []
+    return normalizeArticles(await response.json())
   } catch (error) {
     console.error('Error fetching trending articles:', error)
     return []
@@ -106,8 +134,7 @@ async function getBreakingNews (limit: number = 3) {
     )
 
     if (!response.ok) throw new Error('Failed to fetch')
-    const data: ApiResponse = await response.json()
-    return data.data || []
+    return normalizeArticles(await response.json())
   } catch (error) {
     console.error('Error fetching breaking news:', error)
     return []
@@ -137,19 +164,23 @@ export default function HomePage () {
           getArticlesByCategory('tech', 6)
         ])
 
-      setHomeData(home?.data || [])
+      setHomeData(normalizeArticles(home))
       setTrendingArticles(trending)
       setBreakingNews(breaking)
 
       setSections([
-        { title: '🏛️ রাজনীতি', href: '/category/politics', articles: politics },
+        {
+          title: '🏛️ রাজনীতি',
+          href: '/categories/politics',
+          articles: politics
+        },
         {
           title: '💰 অর্থনীতি',
-          href: '/category/economy',
+          href: '/categories/economy',
           articles: economy
         },
-        { title: '⚽ খেলা', href: '/category/sports', articles: sports },
-        { title: '💻 প্রযুক্তি', href: '/category/tech', articles: tech }
+        { title: '⚽ খেলা', href: '/categories/sports', articles: sports },
+        { title: '💻 প্রযুক্তি', href: '/categories/tech', articles: tech }
       ])
 
       setIsLoading(false)

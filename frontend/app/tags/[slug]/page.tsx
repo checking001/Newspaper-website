@@ -1,12 +1,12 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { useParams, useSearchParams } from 'next/navigation'
 import ArticleCard from '@/components/ArticleCard'
 import Pagination from '@/components/Pagination'
 import { PublicApiService, Tag, Article } from '@/lib/public-api'
 
-export default function TagPage () {
+function TagPageContent () {
   const params = useParams()
   const searchParams = useSearchParams()
   const slug = params.slug as string
@@ -79,5 +79,13 @@ export default function TagPage () {
         </>
       )}
     </main>
+  )
+}
+
+export default function TagPage () {
+  return (
+    <Suspense fallback={<div className='text-center py-12'>লোড হচ্ছে...</div>}>
+      <TagPageContent />
+    </Suspense>
   )
 }

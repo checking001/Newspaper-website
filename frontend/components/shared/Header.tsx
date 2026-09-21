@@ -25,6 +25,12 @@ export const Header: React.FC<HeaderProps> = ({
   className = ''
 }) => {
   const [searchQuery, setSearchQuery] = React.useState('')
+  const today = new Intl.DateTimeFormat('bn-BD', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  }).format(new Date())
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -39,8 +45,15 @@ export const Header: React.FC<HeaderProps> = ({
     >
       {/* Top Bar */}
       <div className='bg-[var(--color-secondary)] text-white py-[var(--spacing-2)] px-[var(--padding-md)]'>
-        <div className='max-w-[1280px] mx-auto text-center text-[var(--font-size-sm)]'>
-          📰 সর্বশেষ খবর সরাসরি আপনার কাছে
+        <div className='max-w-[1280px] mx-auto flex items-center justify-between gap-4 text-[var(--font-size-xs)] md:text-[var(--font-size-sm)]'>
+          <span>{today}</span>
+          <span className='hidden sm:inline'>ঢাকা | অনলাইন সংস্করণ</span>
+          <Link
+            href='/admin/login'
+            className='hover:text-[var(--color-accent-light)]'
+          >
+            সম্পাদক লগইন
+          </Link>
         </div>
       </div>
 
@@ -52,11 +65,11 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Logo */}
             <Link href='/' className='flex-shrink-0'>
               <div className='flex flex-col'>
-                <h1 className='text-[var(--h2-size-mobile)] md:text-[var(--h1-size-mobile)] font-bold text-[var(--color-primary)]'>
+                <h1 className='font-serif text-[var(--h2-size-mobile)] md:text-[var(--h1-size-mobile)] font-bold tracking-tight text-[var(--color-primary)]'>
                   {siteName}
                 </h1>
                 <p className='text-[var(--font-size-xs)] text-[var(--color-text-secondary)]'>
-                  {tagline}
+                  {tagline} · নির্ভরযোগ্য খবর, প্রতিদিন
                 </p>
               </div>
             </Link>
@@ -81,13 +94,11 @@ export const Header: React.FC<HeaderProps> = ({
             )}
 
             {/* Sign In Button */}
-            <Button
-              variant='accent'
-              size='md'
-              className='hidden sm:inline-flex'
-            >
-              সাইন ইন
-            </Button>
+            <Link href='/admin/login' className='hidden sm:inline-flex'>
+              <Button variant='accent' size='md'>
+                সাইন ইন
+              </Button>
+            </Link>
           </div>
 
           {/* Mobile Search */}
@@ -110,7 +121,9 @@ export const Header: React.FC<HeaderProps> = ({
           )}
 
           {/* Navigation */}
-          <Navigation items={navigationItems} />
+          <div className='border-t border-[var(--color-border)] pt-[var(--spacing-3)]'>
+            <Navigation items={navigationItems} />
+          </div>
         </div>
       </div>
     </header>

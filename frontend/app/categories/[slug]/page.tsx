@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import { useParams, useSearchParams } from 'next/navigation'
 import {
   Container,
@@ -46,7 +46,7 @@ interface ApiResponse {
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-export default function CategoryPage () {
+function CategoryPageContent () {
   const params = useParams()
   const searchParams = useSearchParams()
   const slug = params.slug as string
@@ -243,5 +243,13 @@ export default function CategoryPage () {
         </Container>
       )}
     </main>
+  )
+}
+
+export default function CategoryPage () {
+  return (
+    <Suspense fallback={<LoadingSpinner fullScreen text='লোড হচ্ছে...' />}>
+      <CategoryPageContent />
+    </Suspense>
   )
 }

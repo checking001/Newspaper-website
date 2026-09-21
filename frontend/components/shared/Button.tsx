@@ -17,6 +17,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: ButtonSize
   children: ReactNode
   isLoading?: boolean
+  fullWidth?: boolean
 }
 
 export default function Button ({
@@ -24,6 +25,7 @@ export default function Button ({
   size = 'md',
   children,
   isLoading = false,
+  fullWidth = false,
   disabled,
   className = '',
   ...props
@@ -56,7 +58,9 @@ export default function Button ({
     <button
       {...props}
       disabled={disabled || isLoading}
-      className={`${baseClass} ${sizeClass} ${variantClass} ${className}`}
+      className={`${baseClass} ${sizeClass} ${variantClass} ${
+        fullWidth ? 'w-full' : ''
+      } ${className}`}
     >
       {isLoading ? (
         <span className='flex items-center justify-center gap-[var(--spacing-2)]'>

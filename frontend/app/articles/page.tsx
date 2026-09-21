@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import {
   Container,
@@ -35,7 +35,7 @@ interface ApiResponse {
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-export default function LatestPage () {
+function LatestPageContent () {
   const searchParams = useSearchParams()
   const page = searchParams.get('page') || '1'
 
@@ -143,5 +143,13 @@ export default function LatestPage () {
         )}
       </Container>
     </main>
+  )
+}
+
+export default function LatestPage () {
+  return (
+    <Suspense fallback={<LoadingSpinner fullScreen text='খবর লোড হচ্ছে...' />}>
+      <LatestPageContent />
+    </Suspense>
   )
 }

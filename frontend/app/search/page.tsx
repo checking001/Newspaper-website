@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import {
   Container,
@@ -29,7 +29,7 @@ interface ApiResponse {
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-export default function SearchPage () {
+function SearchPageContent () {
   const searchParams = useSearchParams()
   const query = searchParams.get('q') || ''
 
@@ -127,5 +127,13 @@ export default function SearchPage () {
         )}
       </Container>
     </main>
+  )
+}
+
+export default function SearchPage () {
+  return (
+    <Suspense fallback={<LoadingSpinner fullScreen text='খুঁজছি...' />}>
+      <SearchPageContent />
+    </Suspense>
   )
 }

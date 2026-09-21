@@ -20,14 +20,17 @@ const getTestToken = (): string => {
 /**
  * Format date to Bengali locale
  */
-export const formatDate = (date: string | Date): string => {
+export const formatDate = (
+  date: string | Date,
+  format: 'short' | 'long' = 'long'
+): string => {
   if (!date) return ''
 
   const d = typeof date === 'string' ? new Date(date) : date
 
   return d.toLocaleDateString('bn-BD', {
     year: 'numeric',
-    month: 'long',
+    month: format === 'short' ? 'short' : 'long',
     day: 'numeric'
   })
 }

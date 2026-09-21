@@ -56,17 +56,13 @@ export default function VideosPage () {
         </h1>
 
         {loading ? (
-          <LoadingSpinner fullscreen={false} />
+          <LoadingSpinner fullScreen={false} />
         ) : videos.length > 0 ? (
           <Grid columns={2} gap='lg' className='mb-[var(--margin-xl)]'>
             {videos.map(video => (
-              <Card key={video.id} variant='elevated' padding='none'>
+              <Card key={video.id} variant='elevated' padding='sm'>
                 <div className='aspect-video bg-gray-900 relative overflow-hidden'>
-                  <VideoEmbed
-                    url={video.video_url}
-                    title={video.title}
-                    thumbnail={video.thumbnail}
-                  />
+                  <VideoEmbed url={video.video_url} title={video.title} />
                 </div>
                 <div className='p-[var(--spacing-4)]'>
                   <h3 className='text-[var(--h5-size-mobile)] font-bold text-[var(--color-primary)] mb-[var(--spacing-2)]'>
